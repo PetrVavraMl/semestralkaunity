@@ -7,16 +7,21 @@ public class movementScript : MonoBehaviour
     // Start is called before the first frame update
     public Vector2 vectorMove;
     public float speed = 10;
-    public int jumpHeight = 70000;
+    public int jumpHeight = 700;
     public bool isInAir;
     public Vector2 currentInputVector;
     public RuntimeAnimatorController controllerRun;
     public RuntimeAnimatorController controllerJump;
     public RuntimeAnimatorController controllerIdle;
+    public RuntimeAnimatorController controllerHit;
     SpriteRenderer spriteRenderer;
     Animator animator;
     //public Vector2 vectorMove;
     Rigidbody2D rigidBody;
+    public int healthPoints = 100;
+    public bool isInvincible = false;
+    public float invincibilityDurationSeconds = (float)2.5;
+
 
     void Start()
     {
@@ -99,6 +104,7 @@ public class movementScript : MonoBehaviour
             else
             {
                 animator.runtimeAnimatorController = controllerIdle;
+
             }
 
 
@@ -113,6 +119,27 @@ public class movementScript : MonoBehaviour
         {
             isInAir = false;
         }
+
+        if (collision.gameObject.name.Equals("Enemy"))
+        {
+            //odhození hráèe pøi kolizi s nepøítelem
+            GameObject enemyObject = collision.gameObject;
+            rigidBody.AddForce(transform.TransformDirection(Vector3.up) * 400);
+
+            if (enemyObject.transform.position.x > transform.position.x)
+            {
+                rigidBody.AddForce(transform.TransformDirection(Vector3.left) * 300);
+
+            }
+            if (enemyObject.transform.position.x < transform.position.x)
+            {
+                rigidBody.AddForce(transform.TransformDirection(Vector3.right) * 300);
+
+            }
+
+            LoseHealth(10);
+
+        }
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -123,6 +150,7 @@ public class movementScript : MonoBehaviour
             Destroy(collision.gameObject);
         }
 
+        //pøi kolizi s mincí ji smaž
         string objectName = collision.gameObject.name.Substring(0, 4);
         Debug.Log("Nazev objektu: " + objectName);
         if (objectName.Equals("coin"))
@@ -132,6 +160,28 @@ public class movementScript : MonoBehaviour
         }
     }
 
+    private void LoseHealth(int ammount)
+    {
+        if (!isInvincible)
+        {
+            Debug.Log("HIT -10 HP");
+            healthPoints -= ammount;
+            StartCoroutine(BecomeInvincible());
+        }
+
+    }
+
+    private IEnumerator BecomeInvincible()
+    {
+        Debug.Log("HRAC JE NESMRTELNY");
+        isInvincible = true;
+        animator.runtimeAnimatorController = controllerHit;
+
+        yield return new WaitForSeconds(invincibilityDurationSeconds);
+
+        isInvincible = false;
+        Debug.Log("HRAC NENI NESMRTELNY!!!!");
+    }
 
 }
 
