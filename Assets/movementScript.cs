@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class movementScript : MonoBehaviour
 {
@@ -21,6 +22,14 @@ public class movementScript : MonoBehaviour
     public int healthPoints = 100;
     public bool isInvincible = false;
     public float invincibilityDurationSeconds = (float)2.5;
+    public Text scoreText;
+    public int score = 0;
+    public ParticleSystem particleRun;
+    public GameObject particleSystemRun;
+    public ParticleSystem particleRunRight;
+    public GameObject particleSystemRunRight;
+    public int offset = 1;
+    public bool isParticlePlaying = false;
 
 
     void Start()
@@ -30,13 +39,17 @@ public class movementScript : MonoBehaviour
         rigidBody.freezeRotation = true;
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
+        scoreText = GameObject.Find("ScoreText").GetComponent<Text>();
+        particleRun = GameObject.Find("ParticleRun").GetComponent<ParticleSystem>();
+        particleSystemRun = GameObject.Find("ParticleRun");
+        particleRunRight = GameObject.Find("ParticleRunRight").GetComponent<ParticleSystem>();
+        particleSystemRunRight = GameObject.Find("ParticleRunRight");
+
     }
 
     // Update is called once per frame
     void Update()
     {
-
-
         //klepe se geometrie okolo = FEATURE:) 
         if (Input.GetKeyDown(KeyCode.Space) && isInAir == false)
         {
@@ -49,6 +62,10 @@ public class movementScript : MonoBehaviour
             isInAir = true;
 
         }
+        //
+
+
+
         //if (Input.GetKey(KeyCode.S))
         //{
         //    vectorMove.y = vectorMove.y - (float)speed;
@@ -57,6 +74,7 @@ public class movementScript : MonoBehaviour
     }
     private void FixedUpdate()
     {
+
         vectorMove = transform.position;
         if (Input.GetKey(KeyCode.A))
         {
@@ -69,8 +87,12 @@ public class movementScript : MonoBehaviour
             }
             else
             {
+
+
                 animator.runtimeAnimatorController = controllerRun;
+                particleSystemRunRight.transform.position = new Vector2(transform.position.x, transform.position.y - offset);
             }
+
             vectorMove.x = vectorMove.x - (speed * Time.deltaTime);
             //GetComponent<Rigidbody2D>().AddForce(transform.TransformDirection(Vector3.left) * (2));
             transform.position = vectorMove;
@@ -89,8 +111,12 @@ public class movementScript : MonoBehaviour
             }
             else
             {
+
                 animator.runtimeAnimatorController = controllerRun;
+                particleSystemRun.transform.position = new Vector2(transform.position.x, transform.position.y - offset);
+                //particleRun.GetComponent<ParticleSystemRenderer>().flip = new Vector3(0,0,0);
             }
+
             vectorMove.x = vectorMove.x + (speed * Time.deltaTime);
             //GetComponent<Rigidbody2D>().AddForce(transform.TransformDirection(Vector3.right) * (2));
             transform.position = vectorMove;
@@ -109,6 +135,27 @@ public class movementScript : MonoBehaviour
 
 
         }
+
+
+        //zapnutí a vypnutí animace particlù pøi bìhu
+        if (Input.GetKey(KeyCode.A))
+        {
+            particleRunRight.enableEmission = true;
+        }
+        else {
+            particleRunRight.enableEmission = false;
+        }
+
+        if(Input.GetKey(KeyCode.D))
+        {
+            particleRun.enableEmission = true;
+        }
+        else
+        {
+            particleRun.enableEmission = false;
+        }
+
+
 
     }
 
@@ -148,6 +195,8 @@ public class movementScript : MonoBehaviour
         if (collision.gameObject.name == "gem1")
         {
             Destroy(collision.gameObject);
+            score += 25;
+            scoreText.text = "Score: " + score;
         }
 
         //pøi kolizi s mincí ji smaž
@@ -156,6 +205,8 @@ public class movementScript : MonoBehaviour
         if (objectName.Equals("coin"))
         {
             Debug.Log("Je to mince");
+            score += 10;
+            scoreText.text = "Score: " + score;
             Destroy(collision.gameObject);
         }
     }
