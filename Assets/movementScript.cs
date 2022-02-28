@@ -32,6 +32,7 @@ public class movementScript : MonoBehaviour
     public bool isParticlePlaying = false;
 
 
+
     void Start()
     {
         vectorMove = transform.position;
@@ -44,6 +45,7 @@ public class movementScript : MonoBehaviour
         particleSystemRun = GameObject.Find("ParticleRun");
         particleRunRight = GameObject.Find("ParticleRunRight").GetComponent<ParticleSystem>();
         particleSystemRunRight = GameObject.Find("ParticleRunRight");
+
 
     }
 
@@ -63,7 +65,6 @@ public class movementScript : MonoBehaviour
             //isInAir = true;
 
         }
-        //
 
 
 
@@ -143,11 +144,12 @@ public class movementScript : MonoBehaviour
         {
             particleRunRight.enableEmission = true;
         }
-        else {
+        else
+        {
             particleRunRight.enableEmission = false;
         }
 
-        if(Input.GetKey(KeyCode.D))
+        if (Input.GetKey(KeyCode.D))
         {
             particleRun.enableEmission = true;
         }
@@ -163,7 +165,7 @@ public class movementScript : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         //p¯i kolizi se zemÌ nebo s koliderem tilemapy nastav jeVeVzduchu na false
-        
+
 
         if (collision.gameObject.name.Equals("Enemy"))
         {
@@ -192,7 +194,7 @@ public class movementScript : MonoBehaviour
         {
             isInAir = false;
         }
-        
+
     }
     private void OnCollisionExit2D(Collision2D collision)
     {
@@ -200,17 +202,18 @@ public class movementScript : MonoBehaviour
         {
             isInAir = true;
         }
-       
+
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
 
         //p¯i kolizi s objektem diamant ho smaû
         if (collision.gameObject.name == "gem1")
-        {
-            Destroy(collision.gameObject);
+        {          
             score += 25;
             scoreText.text = "Score: " + score;
+            //spusù coroutine pro vyhlazenÌ pohybu gemu k hr·Ëi - coroutina na konci objekt smaûe
+            StartCoroutine(LerpPosition(0.2f,collision.gameObject));
         }
 
         //p¯i kolizi s mincÌ ji smaû
@@ -221,9 +224,18 @@ public class movementScript : MonoBehaviour
             Debug.Log("Je to mince");
             score += 10;
             scoreText.text = "Score: " + score;
-            Destroy(collision.gameObject);
+            //spusù coroutine pro vyhlazenÌ pohybu mince k hr·Ëi - coroutina na konci objekt smaûe
+            StartCoroutine(LerpPosition(0.3f,collision.gameObject));
+
+            
+
+
+            
+            
         }
     }
+   
+
 
     private void LoseHealth(int ammount)
     {
@@ -246,6 +258,20 @@ public class movementScript : MonoBehaviour
 
         isInvincible = false;
         Debug.Log("HRAC NENI NESMRTELNY!!!!");
+    }
+
+    IEnumerator LerpPosition(float duration,GameObject collisionObjekt)
+    {
+        float time = 0;
+        Vector2 startPosition = collisionObjekt.transform.position;
+        while (time < duration)
+        {
+            collisionObjekt.transform.position = Vector2.Lerp(startPosition, transform.position, time / duration);
+            time += Time.deltaTime;
+            yield return null;
+        }
+        collisionObjekt.transform.position = transform.position;
+        Destroy(collisionObjekt);
     }
 
 }

@@ -9,7 +9,7 @@ public class enemyAI : MonoBehaviour
     float y;
     void Start()
     {
-
+        GetComponent<Rigidbody2D>().freezeRotation = true;
     }
 
     // Update is called once per frame
