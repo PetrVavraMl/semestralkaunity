@@ -59,7 +59,8 @@ public class movementScript : MonoBehaviour
             rigidBody.AddForce(transform.TransformDirection(Vector3.up) * jumpHeight);
             //transform.position = Vector2.Lerp(transform.position, vectorMove,(float)0.02);
 
-            isInAir = true;
+            //stará mechanika isInAir
+            //isInAir = true;
 
         }
         //
@@ -162,10 +163,7 @@ public class movementScript : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         //pøi kolizi se zemí nebo s koliderem tilemapy nastav jeVeVzduchu na false
-        if (collision.gameObject.name == "ground_collider" || collision.gameObject.name == "tilemap_collider")
-        {
-            isInAir = false;
-        }
+        
 
         if (collision.gameObject.name.Equals("Enemy"))
         {
@@ -187,6 +185,22 @@ public class movementScript : MonoBehaviour
             LoseHealth(10);
 
         }
+    }
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.name == "ground_collider" || collision.gameObject.name == "tilemap_collider")
+        {
+            isInAir = false;
+        }
+        
+    }
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.name == "ground_collider" || collision.gameObject.name == "tilemap_collider")
+        {
+            isInAir = true;
+        }
+       
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
