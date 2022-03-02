@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class switchSceneMainGame : MonoBehaviour
 {
     // Start is called before the first frame update
+    private int buildIndex = 0;
     void Start()
     {
         Button btn = GetComponent<Button>();

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class movementScript : MonoBehaviour
@@ -15,14 +16,16 @@ public class movementScript : MonoBehaviour
     public RuntimeAnimatorController controllerJump;
     public RuntimeAnimatorController controllerIdle;
     public RuntimeAnimatorController controllerHit;
+    public RuntimeAnimatorController controllerDie;
     SpriteRenderer spriteRenderer;
     Animator animator;
     //public Vector2 vectorMove;
     Rigidbody2D rigidBody;
     public int healthPoints = 100;
     public bool isInvincible = false;
-    public float invincibilityDurationSeconds = (float)2.5;
+    public float invincibilityDurationSeconds = (float)1;
     public Text scoreText;
+    public Text healthText;
     public int score = 0;
     public ParticleSystem particleRun;
     public GameObject particleSystemRun;
@@ -30,6 +33,7 @@ public class movementScript : MonoBehaviour
     public GameObject particleSystemRunRight;
     public int offset = 1;
     public bool isParticlePlaying = false;
+    public static bool isAlive = true;
 
 
 
@@ -41,10 +45,12 @@ public class movementScript : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         scoreText = GameObject.Find("ScoreText").GetComponent<Text>();
+        healthText = GameObject.Find("HealthText").GetComponent<Text>();
         particleRun = GameObject.Find("ParticleRun").GetComponent<ParticleSystem>();
         particleSystemRun = GameObject.Find("ParticleRun");
         particleRunRight = GameObject.Find("ParticleRunRight").GetComponent<ParticleSystem>();
         particleSystemRunRight = GameObject.Find("ParticleRunRight");
+        Debug.Log("RESTART");
 
 
     }
@@ -52,8 +58,16 @@ public class movementScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        if (healthPoints <= 0)
+        {
+            isAlive = false;
+            SceneManager.LoadScene(sceneName: "Menu");
+
+        }
+
         //klepe se geometrie okolo = FEATURE:) 
-        if (Input.GetKeyDown(KeyCode.Space) && isInAir == false)
+        if (Input.GetKeyDown(KeyCode.Space) && isInAir == false && isAlive)
         {
             animator.runtimeAnimatorController = controllerJump;
             vectorMove.y = vectorMove.y + jumpHeight * 2;
@@ -78,85 +92,98 @@ public class movementScript : MonoBehaviour
     {
 
         vectorMove = transform.position;
-        if (Input.GetKey(KeyCode.A))
+        //pokud nenÌ hr·Ë mrtv˝ m˘ûe se spustit skript, pokud je mrtv˝ spustÌ se animace smrti
+        if (isAlive)
         {
 
-            spriteRenderer.flipX = true;
 
-            if (isInAir)
+            if (Input.GetKey(KeyCode.A))
             {
-                animator.runtimeAnimatorController = controllerJump;
+
+                spriteRenderer.flipX = true;
+
+                if (isInAir)
+                {
+                    animator.runtimeAnimatorController = controllerJump;
+                }
+                else
+                {
+
+
+                    animator.runtimeAnimatorController = controllerRun;
+                    particleSystemRunRight.transform.position = new Vector2(transform.position.x, transform.position.y - offset);
+                }
+
+                vectorMove.x = vectorMove.x - (speed * Time.deltaTime);
+                //GetComponent<Rigidbody2D>().AddForce(transform.TransformDirection(Vector3.left) * (2));
+                transform.position = vectorMove;
+                //transform.position += (Vector3.left *speed * Time.deltaTime);  moûn· lepöÌ ¯eöenÌ fakt nwm
+                //transform.position = Vector2.Lerp(transform.position, vectorMove, .2f); nechapu
+
+            }
+            else
+
+            if (Input.GetKey(KeyCode.D))
+            {
+                spriteRenderer.flipX = false;
+                if (isInAir)
+                {
+                    animator.runtimeAnimatorController = controllerJump;
+                }
+                else
+                {
+
+                    animator.runtimeAnimatorController = controllerRun;
+                    particleSystemRun.transform.position = new Vector2(transform.position.x, transform.position.y - offset);
+                    //particleRun.GetComponent<ParticleSystemRenderer>().flip = new Vector3(0,0,0);
+                }
+
+                vectorMove.x = vectorMove.x + (speed * Time.deltaTime);
+                //GetComponent<Rigidbody2D>().AddForce(transform.TransformDirection(Vector3.right) * (2));
+                transform.position = vectorMove;
             }
             else
             {
+                if (isInAir)
+                {
+                    animator.runtimeAnimatorController = controllerJump;
+                }
+                else
+                {
+                    animator.runtimeAnimatorController = controllerIdle;
+
+                }
 
 
-                animator.runtimeAnimatorController = controllerRun;
-                particleSystemRunRight.transform.position = new Vector2(transform.position.x, transform.position.y - offset);
+
             }
 
-            vectorMove.x = vectorMove.x - (speed * Time.deltaTime);
-            //GetComponent<Rigidbody2D>().AddForce(transform.TransformDirection(Vector3.left) * (2));
-            transform.position = vectorMove;
-            //transform.position += (Vector3.left *speed * Time.deltaTime);  moûn· lepöÌ ¯eöenÌ fakt nwm
-            //transform.position = Vector2.Lerp(transform.position, vectorMove, .2f); nechapu
-
-        }
-        else
-
-        if (Input.GetKey(KeyCode.D))
-        {
-            spriteRenderer.flipX = false;
-            if (isInAir)
+            //zapnutÌ a vypnutÌ animace particl˘ p¯i bÏhu
+            if (Input.GetKey(KeyCode.A))
             {
-                animator.runtimeAnimatorController = controllerJump;
+                particleRunRight.enableEmission = true;
             }
             else
             {
-
-                animator.runtimeAnimatorController = controllerRun;
-                particleSystemRun.transform.position = new Vector2(transform.position.x, transform.position.y - offset);
-                //particleRun.GetComponent<ParticleSystemRenderer>().flip = new Vector3(0,0,0);
+                particleRunRight.enableEmission = false;
             }
 
-            vectorMove.x = vectorMove.x + (speed * Time.deltaTime);
-            //GetComponent<Rigidbody2D>().AddForce(transform.TransformDirection(Vector3.right) * (2));
-            transform.position = vectorMove;
-        }
-        else
-        {
-            if (isInAir)
+            if (Input.GetKey(KeyCode.D))
             {
-                animator.runtimeAnimatorController = controllerJump;
+                particleRun.enableEmission = true;
             }
             else
             {
-                animator.runtimeAnimatorController = controllerIdle;
-
+                particleRun.enableEmission = false;
             }
-
-
-        }
-
-
-        //zapnutÌ a vypnutÌ animace particl˘ p¯i bÏhu
-        if (Input.GetKey(KeyCode.A))
-        {
-            particleRunRight.enableEmission = true;
         }
         else
         {
-            particleRunRight.enableEmission = false;
+            animator.runtimeAnimatorController = controllerDie;
+
         }
 
-        if (Input.GetKey(KeyCode.D))
-        {
-            particleRun.enableEmission = true;
-        }
-        else
-        {
-            particleRun.enableEmission = false;
-        }
+
 
 
 
@@ -167,7 +194,7 @@ public class movementScript : MonoBehaviour
         //p¯i kolizi se zemÌ nebo s koliderem tilemapy nastav jeVeVzduchu na false
 
 
-        if (collision.gameObject.name.Equals("Enemy"))
+        if (collision.gameObject.name.Equals("Enemy") && isAlive)
         {
             //odhozenÌ hr·Ëe p¯i kolizi s nep¯Ìtelem
             GameObject enemyObject = collision.gameObject;
@@ -185,6 +212,8 @@ public class movementScript : MonoBehaviour
             }
 
             LoseHealth(10);
+            healthText.text = "Health: " + healthPoints;
+
 
         }
     }
@@ -209,11 +238,11 @@ public class movementScript : MonoBehaviour
 
         //p¯i kolizi s objektem diamant ho smaû
         if (collision.gameObject.name == "gem1")
-        {          
+        {
             score += 25;
             scoreText.text = "Score: " + score;
             //spusù coroutine pro vyhlazenÌ pohybu gemu k hr·Ëi - coroutina na konci objekt smaûe
-            StartCoroutine(LerpPosition(0.2f,collision.gameObject));
+            StartCoroutine(LerpPosition(0.2f, collision.gameObject));
         }
 
         //p¯i kolizi s mincÌ ji smaû
@@ -225,16 +254,16 @@ public class movementScript : MonoBehaviour
             score += 10;
             scoreText.text = "Score: " + score;
             //spusù coroutine pro vyhlazenÌ pohybu mince k hr·Ëi - coroutina na konci objekt smaûe
-            StartCoroutine(LerpPosition(0.3f,collision.gameObject));
-
-            
+            StartCoroutine(LerpPosition(0.3f, collision.gameObject));
 
 
-            
-            
+
+
+
+
         }
     }
-   
+
 
 
     private void LoseHealth(int ammount)
@@ -251,6 +280,7 @@ public class movementScript : MonoBehaviour
     private IEnumerator BecomeInvincible()
     {
         Debug.Log("HRAC JE NESMRTELNY");
+
         isInvincible = true;
         animator.runtimeAnimatorController = controllerHit;
 
@@ -260,7 +290,7 @@ public class movementScript : MonoBehaviour
         Debug.Log("HRAC NENI NESMRTELNY!!!!");
     }
 
-    IEnumerator LerpPosition(float duration,GameObject collisionObjekt)
+    IEnumerator LerpPosition(float duration, GameObject collisionObjekt)
     {
         float time = 0;
         Vector2 startPosition = collisionObjekt.transform.position;
