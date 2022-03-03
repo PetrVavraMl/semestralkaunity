@@ -9824,9 +9824,9 @@ MonoBehaviour:
   controllerIdle: {fileID: 9100000, guid: d5e5a7a93a78d6f40babbc1cd157512a, type: 2}
   controllerHit: {fileID: 9100000, guid: e25e1a8da2e2cbe49b3d9c21f0d121df, type: 2}
   controllerDie: {fileID: 9100000, guid: 331f9f6e61679254d9a5839116ee0e35, type: 2}
-  healthPoints: 10
+  healthPoints: 100
   isInvincible: 0
-  invincibilityDurationSeconds: 0
+  invincibilityDurationSeconds: 0.2
   scoreText: {fileID: 0}
   healthText: {fileID: 0}
   score: 0
@@ -9936,7 +9936,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.000397861, y: 0.0044299215}
+  m_Offset: {x: -0.000397861, y: 0.0006477162}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -9947,7 +9947,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.26205283, y: 0.4109694}
+  m_Size: {x: 0.26205283, y: 0.403405}
   m_EdgeRadius: 0
 --- !u!114 &1113993983
 MonoBehaviour:

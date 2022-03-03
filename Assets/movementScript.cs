@@ -51,6 +51,7 @@ public class movementScript : MonoBehaviour
         particleRunRight = GameObject.Find("ParticleRunRight").GetComponent<ParticleSystem>();
         particleSystemRunRight = GameObject.Find("ParticleRunRight");
         Debug.Log("RESTART");
+        isAlive = true;
 
 
     }
@@ -62,7 +63,8 @@ public class movementScript : MonoBehaviour
         if (healthPoints <= 0)
         {
             isAlive = false;
-            SceneManager.LoadScene(sceneName: "Menu");
+
+
 
         }
 
@@ -78,6 +80,12 @@ public class movementScript : MonoBehaviour
             //stará mechanika isInAir
             //isInAir = true;
 
+        }
+
+        //resetování scény
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
 
 
@@ -180,7 +188,8 @@ public class movementScript : MonoBehaviour
         else
         {
             animator.runtimeAnimatorController = controllerDie;
-
+            particleRunRight.enableEmission = false;
+            particleRun.enableEmission = false;
         }
 
 
@@ -303,6 +312,11 @@ public class movementScript : MonoBehaviour
         collisionObjekt.transform.position = transform.position;
         Destroy(collisionObjekt);
     }
+
+   
+
+    
+
 
 }
 
