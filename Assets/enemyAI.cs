@@ -24,16 +24,16 @@ public class enemyAI : MonoBehaviour
     {
         health -= damage;
         GetComponent<Rigidbody2D>().AddForce(transform.TransformDirection(Vector3.up) * 100);
-        x = collider.transform.position.x;
-        y = collider.transform.position.y;
-        if (transform.position.x < x)
+        float x1 = collider.transform.position.x;
+        float y1 = collider.transform.position.y;
+        if (transform.position.x < x1)
         {
             //transform.position = new Vector3(transform.position.x -5, transform.position.y, 0);
             //Vector2 endPos = new Vector2(transform.position.x - 2, transform.position.y);  
             //StartCoroutine(LerpPosition(2,this,endPos))
             GetComponent<Rigidbody2D>().AddForce(transform.TransformDirection(Vector3.left) * 150);
         }
-        if (transform.position.x > x) {
+        if (transform.position.x > x1) {
             GetComponent<Rigidbody2D>().AddForce(transform.TransformDirection(Vector3.right) * 150);
         }
 
