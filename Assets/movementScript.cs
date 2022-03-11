@@ -17,6 +17,7 @@ public class movementScript : MonoBehaviour
     public RuntimeAnimatorController controllerIdle;
     public RuntimeAnimatorController controllerHit;
     public RuntimeAnimatorController controllerDie;
+    public RuntimeAnimatorController controllerAttack;
     SpriteRenderer spriteRenderer;
     Animator animator;
     //public Vector2 vectorMove;
@@ -34,6 +35,9 @@ public class movementScript : MonoBehaviour
     public int offset = 1;
     public bool isParticlePlaying = false;
     public static bool isAlive = true;
+    public enum AnimationType { run, jump, idle, attack, hit, die };
+    public AnimationType animationType = AnimationType.idle;
+    public bool isAttacking = false;
 
 
 
@@ -59,6 +63,39 @@ public class movementScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (isAttacking)
+        {
+            animator.runtimeAnimatorController = controllerAttack;
+            StartCoroutine(AnimationAttackWait(0.4f));
+        }
+        else
+        {
+            switch (animationType)
+            {
+                case AnimationType.run:
+                    animator.runtimeAnimatorController = controllerRun;
+                    break;
+                case AnimationType.jump:
+                    animator.runtimeAnimatorController = controllerJump;
+                    break;
+                case AnimationType.idle:
+                    animator.runtimeAnimatorController = controllerIdle;
+                    break;
+                case AnimationType.attack:
+                    isAttacking = true;
+                    break;
+                case AnimationType.hit:
+                    animator.runtimeAnimatorController = controllerHit;
+
+                    break;
+                case AnimationType.die:
+                    animator.runtimeAnimatorController = controllerDie;
+                    break;
+                default:
+                    break;
+            }
+        }
+
 
         if (healthPoints <= 0)
         {
@@ -68,10 +105,20 @@ public class movementScript : MonoBehaviour
 
         }
 
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+        {
+            if (!isAttacking)
+            {
+                animationType = AnimationType.attack;
+
+            }
+
+        }
+
         //klepe se geometrie okolo = FEATURE:) 
         if (Input.GetKeyDown(KeyCode.Space) && isInAir == false && isAlive)
         {
-            animator.runtimeAnimatorController = controllerJump;
+            animationType = AnimationType.jump;
             vectorMove.y = vectorMove.y + jumpHeight * 2;
             //transform.position = vectorMove;
             rigidBody.AddForce(transform.TransformDirection(Vector3.up) * jumpHeight);
@@ -112,13 +159,12 @@ public class movementScript : MonoBehaviour
 
                 if (isInAir)
                 {
-                    animator.runtimeAnimatorController = controllerJump;
+                    animationType = AnimationType.jump;
                 }
                 else
                 {
 
-
-                    animator.runtimeAnimatorController = controllerRun;
+                    animationType = AnimationType.run;
                     particleSystemRunRight.transform.position = new Vector2(transform.position.x, transform.position.y - offset);
                 }
 
@@ -136,12 +182,11 @@ public class movementScript : MonoBehaviour
                 spriteRenderer.flipX = false;
                 if (isInAir)
                 {
-                    animator.runtimeAnimatorController = controllerJump;
+                    animationType = AnimationType.jump;
                 }
                 else
                 {
-
-                    animator.runtimeAnimatorController = controllerRun;
+                    animationType = AnimationType.run;
                     particleSystemRun.transform.position = new Vector2(transform.position.x, transform.position.y - offset);
                     //particleRun.GetComponent<ParticleSystemRenderer>().flip = new Vector3(0,0,0);
                 }
@@ -154,11 +199,11 @@ public class movementScript : MonoBehaviour
             {
                 if (isInAir)
                 {
-                    animator.runtimeAnimatorController = controllerJump;
+                    animationType = AnimationType.jump;
                 }
                 else
                 {
-                    animator.runtimeAnimatorController = controllerIdle;
+                    animationType = AnimationType.idle;
 
                 }
 
@@ -187,7 +232,7 @@ public class movementScript : MonoBehaviour
         }
         else
         {
-            animator.runtimeAnimatorController = controllerDie;
+            animationType = AnimationType.die;
             particleRunRight.enableEmission = false;
             particleRun.enableEmission = false;
         }
@@ -200,9 +245,8 @@ public class movementScript : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        //pøi kolizi se zemí nebo s koliderem tilemapy nastav jeVeVzduchu na false
 
-
+        //kolize s nepøítelem
         if (collision.gameObject.name.Equals("Enemy") && isAlive)
         {
             //odhození hráèe pøi kolizi s nepøítelem
@@ -313,9 +357,21 @@ public class movementScript : MonoBehaviour
         Destroy(collisionObjekt);
     }
 
-   
+    IEnumerator AnimationAttackWait(float duration)
+    {
+        float time = 0;
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            yield return null;
+        }
+        isAttacking = false;
 
-    
+    }
+
+
+
+
 
 
 }
