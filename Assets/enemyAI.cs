@@ -8,9 +8,14 @@ public class enemyAI : MonoBehaviour
     // Start is called before the first frame update
     float x;
     float y;
+    public float jumpHeight;
     public int health;
+    public bool isInAir;
+    
     void Start()
     {
+        jumpHeight = 50;
+        isInAir = false;
         health = 100;
         GetComponent<Rigidbody2D>().freezeRotation = true;
     }
@@ -46,11 +51,9 @@ public class enemyAI : MonoBehaviour
 
     private void Die()
     {
-        
+        // dodìlat animaci smrti
         Debug.Log("enemy is DEAD");
-        GetComponent<Collider2D>().enabled = false;
-        GetComponent<PolygonCollider2D>().enabled = false;
-        Destroy(this);
+        Destroy(this.gameObject);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -67,6 +70,22 @@ public class enemyAI : MonoBehaviour
     {
         if (collision.gameObject.name.Equals("Player") && movementScript.isAlive == true)
         {
+            RaycastHit2D rcHitLeft = Physics2D.Raycast(transform.position,Vector2.left);
+            RaycastHit2D rcHitRight = Physics2D.Raycast(transform.position, Vector2.right);
+            if (rcHitLeft != null && isInAir == false) {
+                float distance = Mathf.Abs(transform.position.x - rcHitLeft.point.x);
+                if (distance <= 10) {
+                    GetComponent<Rigidbody2D>().AddForce(transform.TransformDirection(Vector3.up) * jumpHeight);
+                }
+            }
+            if (rcHitRight != null && isInAir == false)
+            {
+                float distance = Mathf.Abs(transform.position.x - rcHitRight.point.x);
+                if (distance <= 10)
+                {
+                    GetComponent<Rigidbody2D>().AddForce(transform.TransformDirection(Vector3.up) * jumpHeight);
+                }
+            }
             x = collision.transform.position.x;
             y = collision.transform.position.y;
 
@@ -96,5 +115,22 @@ public class enemyAI : MonoBehaviour
         }
         collisionObjekt.transform.position = transform.position;
         Destroy(collisionObjekt);
+    }
+
+    private void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.name == "ground_collider" || collision.gameObject.name == "tilemap_collider")
+        {
+            isInAir = false;
+        }
+
+    }
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.name == "ground_collider" || collision.gameObject.name == "tilemap_collider")
+        {
+            isInAir = true;
+        }
+
     }
 }

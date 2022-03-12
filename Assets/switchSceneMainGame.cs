@@ -20,7 +20,6 @@ public class switchSceneMainGame : MonoBehaviour
     }
     private void TaskOnClick()
     {
-        Debug.Log("KLIK");
         SceneManager.LoadScene(sceneName:"MainGame");
     }
 

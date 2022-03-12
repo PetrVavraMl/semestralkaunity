@@ -10,16 +10,10 @@ public class movementScript : MonoBehaviour
     public Vector2 vectorMove;
     public float speed = 10;
     public int jumpHeight = 700;
-    public bool isInAir;
     public Vector2 currentInputVector;
-    public RuntimeAnimatorController controllerRun;
-    public RuntimeAnimatorController controllerJump;
-    public RuntimeAnimatorController controllerIdle;
-    public RuntimeAnimatorController controllerHit;
-    public RuntimeAnimatorController controllerDie;
-    public RuntimeAnimatorController controllerAttack;
+
     SpriteRenderer spriteRenderer;
-    Animator animator;
+    //public Animator animator;
     //public Vector2 vectorMove;
     Rigidbody2D rigidBody;
     public int healthPoints = 100;
@@ -34,20 +28,23 @@ public class movementScript : MonoBehaviour
     public GameObject particleSystemRunRight;
     public int offset = 1;
     public bool isParticlePlaying = false;
+    public static bool isInAir;
     public static bool isAlive = true;
-    public enum AnimationType { run, jump, idle, attack, hit, die };
-    public AnimationType animationType = AnimationType.idle;
+    public static bool isRunning;
     public bool isAttacking = false;
+    public Animator animator;
+    public float knockbackStrength;
 
 
 
     void Start()
     {
+        knockbackStrength = 10;
         vectorMove = transform.position;
         rigidBody = GetComponent<Rigidbody2D>();
         rigidBody.freezeRotation = true;
         spriteRenderer = GetComponent<SpriteRenderer>();
-        animator = GetComponent<Animator>();
+        //animator = GetComponent<Animator>();
         scoreText = GameObject.Find("ScoreText").GetComponent<Text>();
         healthText = GameObject.Find("HealthText").GetComponent<Text>();
         particleRun = GameObject.Find("ParticleRun").GetComponent<ParticleSystem>();
@@ -63,38 +60,39 @@ public class movementScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isAttacking)
-        {
-            animator.runtimeAnimatorController = controllerAttack;
-            StartCoroutine(AnimationAttackWait(0.4f));
-        }
-        else
-        {
-            switch (animationType)
-            {
-                case AnimationType.run:
-                    animator.runtimeAnimatorController = controllerRun;
-                    break;
-                case AnimationType.jump:
-                    animator.runtimeAnimatorController = controllerJump;
-                    break;
-                case AnimationType.idle:
-                    animator.runtimeAnimatorController = controllerIdle;
-                    break;
-                case AnimationType.attack:
-                    isAttacking = true;
-                    break;
-                case AnimationType.hit:
-                    animator.runtimeAnimatorController = controllerHit;
 
-                    break;
-                case AnimationType.die:
-                    animator.runtimeAnimatorController = controllerDie;
-                    break;
-                default:
-                    break;
-            }
-        }
+        //if (isAttacking)
+        //{
+        //    animator.runtimeAnimatorController = controllerAttack;
+        //    StartCoroutine(AnimationAttackWait(1));
+        //}
+        //else
+        //{
+        //    switch (animationType)
+        //    {
+        //        case AnimationType.run:
+        //            animator.runtimeAnimatorController = controllerRun;
+        //            break;
+        //        case AnimationType.jump:
+        //            animator.runtimeAnimatorController = controllerJump;
+        //            break;
+        //        case AnimationType.idle:
+        //            animator.runtimeAnimatorController = controllerIdle;
+        //            break;
+        //        case AnimationType.attack:
+        //            isAttacking = true;
+        //            break;
+        //        case AnimationType.hit:
+        //            animator.runtimeAnimatorController = controllerHit;
+
+        //            break;
+        //        case AnimationType.die:
+        //            animator.runtimeAnimatorController = controllerDie;
+        //            break;
+        //        default:
+        //            break;
+        //    }
+        //}
 
 
         if (healthPoints <= 0)
@@ -105,20 +103,20 @@ public class movementScript : MonoBehaviour
 
         }
 
-        if (Input.GetKeyDown(KeyCode.Mouse0))
-        {
-            if (!isAttacking)
-            {
-                animationType = AnimationType.attack;
+        //if (Input.GetKeyDown(KeyCode.Mouse0))
+        //{
+        //    if (!isAttacking)
+        //    {
+        //        animationType = AnimationType.attack;
 
-            }
+        //    }
 
-        }
+        //}
 
         //klepe se geometrie okolo = FEATURE:) 
         if (Input.GetKeyDown(KeyCode.Space) && isInAir == false && isAlive)
         {
-            animationType = AnimationType.jump;
+            //animationType = AnimationType.jump;
             vectorMove.y = vectorMove.y + jumpHeight * 2;
             //transform.position = vectorMove;
             rigidBody.AddForce(transform.TransformDirection(Vector3.up) * jumpHeight);
@@ -154,19 +152,19 @@ public class movementScript : MonoBehaviour
 
             if (Input.GetKey(KeyCode.A))
             {
-
+                isRunning = true;
                 spriteRenderer.flipX = true;
 
-                if (isInAir)
+                if (!isInAir)
                 {
-                    animationType = AnimationType.jump;
-                }
-                else
-                {
-
-                    animationType = AnimationType.run;
                     particleSystemRunRight.transform.position = new Vector2(transform.position.x, transform.position.y - offset);
+                    //animationType = AnimationType.jump;
                 }
+                //else
+                //{
+
+                //    //animationType = AnimationType.run;
+                //}
 
                 vectorMove.x = vectorMove.x - (speed * Time.deltaTime);
                 //GetComponent<Rigidbody2D>().AddForce(transform.TransformDirection(Vector3.left) * (2));
@@ -179,17 +177,19 @@ public class movementScript : MonoBehaviour
 
             if (Input.GetKey(KeyCode.D))
             {
+                isRunning = true;
                 spriteRenderer.flipX = false;
-                if (isInAir)
+                if (!isInAir)
                 {
-                    animationType = AnimationType.jump;
-                }
-                else
-                {
-                    animationType = AnimationType.run;
                     particleSystemRun.transform.position = new Vector2(transform.position.x, transform.position.y - offset);
-                    //particleRun.GetComponent<ParticleSystemRenderer>().flip = new Vector3(0,0,0);
+
+                    //animationType = AnimationType.jump;
                 }
+                //else
+                //{
+                //animationType = AnimationType.run;
+                //particleRun.GetComponent<ParticleSystemRenderer>().flip = new Vector3(0,0,0);
+                //}
 
                 vectorMove.x = vectorMove.x + (speed * Time.deltaTime);
                 //GetComponent<Rigidbody2D>().AddForce(transform.TransformDirection(Vector3.right) * (2));
@@ -197,15 +197,16 @@ public class movementScript : MonoBehaviour
             }
             else
             {
-                if (isInAir)
-                {
-                    animationType = AnimationType.jump;
-                }
-                else
-                {
-                    animationType = AnimationType.idle;
+                isRunning = false;
+                //if (isInAir)
+                //{
+                //    //animationType = AnimationType.jump;
+                //}
+                //else
+                //{
+                //    //animationType = AnimationType.idle;
 
-                }
+                //}
 
 
 
@@ -232,7 +233,7 @@ public class movementScript : MonoBehaviour
         }
         else
         {
-            animationType = AnimationType.die;
+            //animationType = AnimationType.die;
             particleRunRight.enableEmission = false;
             particleRun.enableEmission = false;
         }
@@ -249,18 +250,25 @@ public class movementScript : MonoBehaviour
         //kolize s nepøítelem
         if (collision.gameObject.name.Equals("Enemy") && isAlive)
         {
+            animator.SetTrigger("hitTrigger");
             //odhození hráèe pøi kolizi s nepøítelem
             GameObject enemyObject = collision.gameObject;
-            rigidBody.AddForce(transform.TransformDirection(Vector3.up) * 400);
+            //rigidBody.AddForce(transform.TransformDirection(Vector3.up) * 400);
 
             if (enemyObject.transform.position.x > transform.position.x)
             {
-                rigidBody.AddForce(transform.TransformDirection(Vector3.left) * 300);
+                Vector2 difference = (transform.position - collision.transform.position).normalized;
+                Vector2 force = difference * knockbackStrength;
+                rigidBody.AddForce(force, ForceMode2D.Impulse);
+                //rigidBody.AddForce(transform.TransformDirection(Vector3.left) * 300);
 
             }
             if (enemyObject.transform.position.x < transform.position.x)
             {
-                rigidBody.AddForce(transform.TransformDirection(Vector3.right) * 300);
+                Vector2 difference = (transform.position - collision.transform.position).normalized;
+                Vector2 force = difference * knockbackStrength;
+                rigidBody.AddForce(force, ForceMode2D.Impulse);
+                //rigidBody.AddForce(transform.TransformDirection(Vector3.right) * 300);
 
             }
 
@@ -270,22 +278,38 @@ public class movementScript : MonoBehaviour
 
         }
     }
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-        if (collision.gameObject.name == "ground_collider" || collision.gameObject.name == "tilemap_collider")
-        {
-            isInAir = false;
-        }
 
-    }
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.name == "ground_collider" || collision.gameObject.name == "tilemap_collider")
-        {
-            isInAir = true;
-        }
 
-    }
+    //nahrazeno dalsim colliderem a skriptem colliderGround.cs
+    //private void OnCollisionStay2D(Collision2D collision)
+    //{
+    //    //Debug.Log("kolider: " + collision.collider);
+    //    //if (collision.collider == colliderGround)
+    //    //{
+    //    //    Debug.Log("Dotykam se zeme");
+    //    //    if (collision.gameObject.name == "ground_collider" || collision.gameObject.name == "tilemap_collider")
+    //    //    {
+    //    //        isInAir = false;
+
+
+    //    //    }
+    //    //}
+
+
+    //}
+    //private void OnCollisionExit2D(Collision2D collision)
+    //{
+    //    if (collision.collider == colliderGround)
+    //    {
+    //        if (collision.gameObject.name == "ground_collider" || collision.gameObject.name == "tilemap_collider")
+    //        {
+    //            isInAir = true;
+
+
+    //        }
+    //    }
+
+    //}
     private void OnTriggerEnter2D(Collider2D collision)
     {
 
@@ -335,7 +359,7 @@ public class movementScript : MonoBehaviour
         Debug.Log("HRAC JE NESMRTELNY");
 
         isInvincible = true;
-        animator.runtimeAnimatorController = controllerHit;
+        //animator.runtimeAnimatorController = controllerHit;
 
         yield return new WaitForSeconds(invincibilityDurationSeconds);
 

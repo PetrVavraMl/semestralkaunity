@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class combatLogic : MonoBehaviour
+public class CombatLogic : MonoBehaviour
 {
     // Start is called before the first frame update
     public int attackDamage = 10;
@@ -11,6 +11,7 @@ public class combatLogic : MonoBehaviour
     public LayerMask enemyLayers;
     public float attackSpeed = 2f;
     float nextAttackTime = 0f;
+    public Animator animator;
     void Start()
     {
 
@@ -19,16 +20,16 @@ public class combatLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Time.time >=nextAttackTime)
+        if (Time.time >= nextAttackTime)
         {
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
+                animator.SetTrigger("attackTrigger");
                 Attack();
                 nextAttackTime = Time.time + 1f / attackSpeed;
             }
         }
-       
-
+        
     }
 
     void Attack()
@@ -39,7 +40,7 @@ public class combatLogic : MonoBehaviour
             if (hitEnemies[i] != null)
             {
                 Debug.Log("TREFIL: " + hitEnemies[i].name);
-                hitEnemies[i].GetComponent<enemyAI>().TakeDamage(attackDamage,GetComponent<Collider2D>());
+                hitEnemies[i].GetComponentInParent<enemyAI>().TakeDamage(10, GetComponent<Collider2D>());
             }
         }
     }
