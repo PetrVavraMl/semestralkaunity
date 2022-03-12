@@ -137,7 +137,6 @@ GameObject:
   - component: {fileID: 4593065}
   - component: {fileID: 4593070}
   - component: {fileID: 4593069}
-  - component: {fileID: 4593071}
   - component: {fileID: 4593072}
   m_Layer: 0
   m_Name: Enemy
@@ -300,55 +299,6 @@ MonoBehaviour:
   jumpHeight: 0
   health: 0
   isInAir: 0
---- !u!60 &4593071
-PolygonCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4593064}
-  m_Enabled: 0
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 0.191082, y: 0.12391332}
-      - {x: -0.19051361, y: 0.122553654}
-      - {x: -0.1897831, y: 0.0639406}
-      - {x: -0.31392097, y: 0.062165078}
-      - {x: -0.31285286, y: 0.0033424422}
-      - {x: -0.37690163, y: 0.0037732106}
-      - {x: -0.37901497, y: -0.059103705}
-      - {x: -0.4376068, y: -0.060655966}
-      - {x: -0.43893242, y: -0.386392}
-      - {x: -0.38780785, y: -0.3902103}
-      - {x: -0.38207245, y: -0.44103414}
-      - {x: -0.3225422, y: -0.4514215}
-      - {x: -0.32884026, y: -0.50354826}
-      - {x: 0.3162403, y: -0.5020379}
-      - {x: 0.3201313, y: -0.44540375}
-      - {x: 0.38145256, y: -0.44604427}
-      - {x: 0.37997627, y: -0.38173416}
-      - {x: 0.44293594, y: -0.38587114}
-      - {x: 0.437706, y: -0.061092317}
-      - {x: 0.3766861, y: -0.061558053}
-      - {x: 0.3781395, y: 0.0010505542}
-      - {x: 0.31640244, y: 0.0033337064}
-      - {x: 0.31276703, y: 0.0638846}
-      - {x: 0.1901474, y: 0.06455802}
 --- !u!95 &4593072
 Animator:
   serializedVersion: 3

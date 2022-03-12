@@ -11,9 +11,12 @@ public class enemyAI : MonoBehaviour
     public float jumpHeight;
     public int health;
     public bool isInAir;
+    ParticleSystem particleBlood;
     
     void Start()
     {
+        particleBlood = GetComponentInChildren<ParticleSystem>();
+
         jumpHeight = 50;
         isInAir = false;
         health = 100;
@@ -27,20 +30,29 @@ public class enemyAI : MonoBehaviour
     }
     public void TakeDamage(int damage,Collider2D collider)
     {
+        //TODO death animace
         health -= damage;
-        GetComponent<Rigidbody2D>().AddForce(transform.TransformDirection(Vector3.up) * 100);
+        particleBlood.Play();
+        GetComponent<Rigidbody2D>().AddForce(transform.up * 0.2f, ForceMode2D.Impulse);
         float x1 = collider.transform.position.x;
         float y1 = collider.transform.position.y;
-        if (transform.position.x < x1)
-        {
+        Vector2 difference = (transform.position - collider.transform.position).normalized;
+        Vector2 force = difference * 2;
+        GetComponent<Rigidbody2D>().AddForce(force, ForceMode2D.Impulse);
+        //if (transform.position.x < x1)
+        //{
+           
             //transform.position = new Vector3(transform.position.x -5, transform.position.y, 0);
             //Vector2 endPos = new Vector2(transform.position.x - 2, transform.position.y);  
             //StartCoroutine(LerpPosition(2,this,endPos))
-            GetComponent<Rigidbody2D>().AddForce(transform.TransformDirection(Vector3.left) * 150);
-        }
-        if (transform.position.x > x1) {
-            GetComponent<Rigidbody2D>().AddForce(transform.TransformDirection(Vector3.right) * 150);
-        }
+            //GetComponent<Rigidbody2D>().AddForce(transform.TransformDirection(Vector3.left) * 150);
+        //}
+        //if (transform.position.x > x1) {
+        //    Vector2 difference = (transform.position - collider.transform.position).normalized;
+        //    Vector2 force = difference * 5;
+        //    GetComponent<Rigidbody2D>().AddForce(force, ForceMode2D.Impulse);
+        //    //GetComponent<Rigidbody2D>().AddForce(transform.TransformDirection(Vector3.right) * 150);
+        //}
 
         Debug.Log("ENEMY DAMAGE TAKEN");
         if (health <= 0)

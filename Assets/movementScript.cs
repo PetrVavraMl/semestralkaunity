@@ -44,7 +44,6 @@ public class movementScript : MonoBehaviour
         rigidBody = GetComponent<Rigidbody2D>();
         rigidBody.freezeRotation = true;
         spriteRenderer = GetComponent<SpriteRenderer>();
-        //animator = GetComponent<Animator>();
         scoreText = GameObject.Find("ScoreText").GetComponent<Text>();
         healthText = GameObject.Find("HealthText").GetComponent<Text>();
         particleRun = GameObject.Find("ParticleRun").GetComponent<ParticleSystem>();
@@ -61,39 +60,7 @@ public class movementScript : MonoBehaviour
     void Update()
     {
 
-        //if (isAttacking)
-        //{
-        //    animator.runtimeAnimatorController = controllerAttack;
-        //    StartCoroutine(AnimationAttackWait(1));
-        //}
-        //else
-        //{
-        //    switch (animationType)
-        //    {
-        //        case AnimationType.run:
-        //            animator.runtimeAnimatorController = controllerRun;
-        //            break;
-        //        case AnimationType.jump:
-        //            animator.runtimeAnimatorController = controllerJump;
-        //            break;
-        //        case AnimationType.idle:
-        //            animator.runtimeAnimatorController = controllerIdle;
-        //            break;
-        //        case AnimationType.attack:
-        //            isAttacking = true;
-        //            break;
-        //        case AnimationType.hit:
-        //            animator.runtimeAnimatorController = controllerHit;
-
-        //            break;
-        //        case AnimationType.die:
-        //            animator.runtimeAnimatorController = controllerDie;
-        //            break;
-        //        default:
-        //            break;
-        //    }
-        //}
-
+        
 
         if (healthPoints <= 0)
         {
@@ -103,28 +70,11 @@ public class movementScript : MonoBehaviour
 
         }
 
-        //if (Input.GetKeyDown(KeyCode.Mouse0))
-        //{
-        //    if (!isAttacking)
-        //    {
-        //        animationType = AnimationType.attack;
-
-        //    }
-
-        //}
-
-        //klepe se geometrie okolo = FEATURE:) 
+        
         if (Input.GetKeyDown(KeyCode.Space) && isInAir == false && isAlive)
         {
-            //animationType = AnimationType.jump;
             vectorMove.y = vectorMove.y + jumpHeight * 2;
-            //transform.position = vectorMove;
             rigidBody.AddForce(transform.TransformDirection(Vector3.up) * jumpHeight);
-            //transform.position = Vector2.Lerp(transform.position, vectorMove,(float)0.02);
-
-            //star· mechanika isInAir
-            //isInAir = true;
-
         }
 
         //resetov·nÌ scÈny
@@ -133,13 +83,6 @@ public class movementScript : MonoBehaviour
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
 
-
-
-        //if (Input.GetKey(KeyCode.S))
-        //{
-        //    vectorMove.y = vectorMove.y - (float)speed;
-        //    transform.position = vectorMove;
-        //}
     }
     private void FixedUpdate()
     {
@@ -158,19 +101,10 @@ public class movementScript : MonoBehaviour
                 if (!isInAir)
                 {
                     particleSystemRunRight.transform.position = new Vector2(transform.position.x, transform.position.y - offset);
-                    //animationType = AnimationType.jump;
                 }
-                //else
-                //{
-
-                //    //animationType = AnimationType.run;
-                //}
-
+               
                 vectorMove.x = vectorMove.x - (speed * Time.deltaTime);
-                //GetComponent<Rigidbody2D>().AddForce(transform.TransformDirection(Vector3.left) * (2));
                 transform.position = vectorMove;
-                //transform.position += (Vector3.left *speed * Time.deltaTime);  moûn· lepöÌ ¯eöenÌ fakt nwm
-                //transform.position = Vector2.Lerp(transform.position, vectorMove, .2f); nechapu
 
             }
             else
@@ -182,34 +116,14 @@ public class movementScript : MonoBehaviour
                 if (!isInAir)
                 {
                     particleSystemRun.transform.position = new Vector2(transform.position.x, transform.position.y - offset);
-
-                    //animationType = AnimationType.jump;
                 }
-                //else
-                //{
-                //animationType = AnimationType.run;
-                //particleRun.GetComponent<ParticleSystemRenderer>().flip = new Vector3(0,0,0);
-                //}
-
+               
                 vectorMove.x = vectorMove.x + (speed * Time.deltaTime);
-                //GetComponent<Rigidbody2D>().AddForce(transform.TransformDirection(Vector3.right) * (2));
                 transform.position = vectorMove;
             }
             else
             {
-                isRunning = false;
-                //if (isInAir)
-                //{
-                //    //animationType = AnimationType.jump;
-                //}
-                //else
-                //{
-                //    //animationType = AnimationType.idle;
-
-                //}
-
-
-
+                isRunning = false;               
             }
 
             //zapnutÌ a vypnutÌ animace particl˘ p¯i bÏhu
@@ -233,7 +147,6 @@ public class movementScript : MonoBehaviour
         }
         else
         {
-            //animationType = AnimationType.die;
             particleRunRight.enableEmission = false;
             particleRun.enableEmission = false;
         }
@@ -274,8 +187,6 @@ public class movementScript : MonoBehaviour
 
             LoseHealth(10);
             healthText.text = "Health: " + healthPoints;
-
-
         }
     }
 
@@ -312,9 +223,9 @@ public class movementScript : MonoBehaviour
     //}
     private void OnTriggerEnter2D(Collider2D collision)
     {
-
+        string objectName = collision.gameObject.name.Substring(0, 3);
         //p¯i kolizi s objektem diamant ho smaû
-        if (collision.gameObject.name == "gem1")
+        if (objectName.Equals("gem"))
         {
             score += 25;
             scoreText.text = "Score: " + score;
@@ -323,21 +234,14 @@ public class movementScript : MonoBehaviour
         }
 
         //p¯i kolizi s mincÌ ji smaû
-        string objectName = collision.gameObject.name.Substring(0, 4);
         Debug.Log("Nazev objektu: " + objectName);
-        if (objectName.Equals("coin"))
+        if (objectName.Equals("coi"))
         {
             Debug.Log("Je to mince");
             score += 10;
             scoreText.text = "Score: " + score;
             //spusù coroutine pro vyhlazenÌ pohybu mince k hr·Ëi - coroutina na konci objekt smaûe
             StartCoroutine(LerpPosition(0.3f, collision.gameObject));
-
-
-
-
-
-
         }
     }
 
@@ -351,20 +255,13 @@ public class movementScript : MonoBehaviour
             healthPoints -= ammount;
             StartCoroutine(BecomeInvincible());
         }
-
     }
 
     private IEnumerator BecomeInvincible()
     {
-        Debug.Log("HRAC JE NESMRTELNY");
-
         isInvincible = true;
-        //animator.runtimeAnimatorController = controllerHit;
-
         yield return new WaitForSeconds(invincibilityDurationSeconds);
-
         isInvincible = false;
-        Debug.Log("HRAC NENI NESMRTELNY!!!!");
     }
 
     IEnumerator LerpPosition(float duration, GameObject collisionObjekt)
