@@ -18,7 +18,7 @@ public class movementScript : MonoBehaviour
     Rigidbody2D rigidBody;
     public int healthPoints = 100;
     public bool isInvincible = false;
-    public float invincibilityDurationSeconds = (float)1;
+    public float invincibilityDurationSeconds = 1;
     public Text scoreText;
     public Text healthText;
     public int score = 0;
@@ -35,7 +35,19 @@ public class movementScript : MonoBehaviour
     public Animator animator;
     public float knockbackStrength;
 
+    public void SavePlayer()
+    {
+        SystemSave.SavePlayer(this);
+    }
 
+    public void LoadPlayer() {
+        PlayerSave loadedData  = SystemSave.LoadPlayer();
+        healthPoints = loadedData.healthPoints;
+        score = loadedData.score;
+        transform.position = new Vector3(loadedData.position[0], loadedData.position[1], loadedData.position[2]);
+        scoreText.text = "Score: " + score;
+        healthText.text = "Health: " + healthPoints;
+    }
 
     void Start()
     {
@@ -59,9 +71,6 @@ public class movementScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        
-
         if (healthPoints <= 0)
         {
             isAlive = false;
@@ -70,7 +79,7 @@ public class movementScript : MonoBehaviour
 
         }
 
-        
+
         if (Input.GetKeyDown(KeyCode.Space) && isInAir == false && isAlive)
         {
             vectorMove.y = vectorMove.y + jumpHeight * 2;
@@ -86,9 +95,10 @@ public class movementScript : MonoBehaviour
     }
     private void FixedUpdate()
     {
+       
 
         vectorMove = transform.position;
-        //pokud není hráè mrtvý mùže se spustit skript, pokud je mrtvý spustí se animace smrti
+        //pokud není hráè mrtvý mùže se spustit skript
         if (isAlive)
         {
 
@@ -102,7 +112,7 @@ public class movementScript : MonoBehaviour
                 {
                     particleSystemRunRight.transform.position = new Vector2(transform.position.x, transform.position.y - offset);
                 }
-               
+
                 vectorMove.x = vectorMove.x - (speed * Time.deltaTime);
                 transform.position = vectorMove;
 
@@ -117,13 +127,13 @@ public class movementScript : MonoBehaviour
                 {
                     particleSystemRun.transform.position = new Vector2(transform.position.x, transform.position.y - offset);
                 }
-               
+
                 vectorMove.x = vectorMove.x + (speed * Time.deltaTime);
                 transform.position = vectorMove;
             }
             else
             {
-                isRunning = false;               
+                isRunning = false;
             }
 
             //zapnutí a vypnutí animace particlù pøi bìhu

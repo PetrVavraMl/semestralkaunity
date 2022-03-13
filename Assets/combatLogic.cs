@@ -7,7 +7,7 @@ public class CombatLogic : MonoBehaviour
     // Start is called before the first frame update
     public int attackDamage = 10;
     public Transform hitArea;
-    public float attackRange = 0.5f;
+    public float attackRange = 1.5f;
     public LayerMask enemyLayers;
     public float attackSpeed = 2f;
     float nextAttackTime = 0f;
@@ -20,6 +20,18 @@ public class CombatLogic : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            Vector2 posCollider = GetComponentInParent<BoxCollider2D>().transform.position;
+            hitArea.transform.position = new Vector2(posCollider.x + 1f, posCollider.y);
+        }
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            Vector2 posCollider = GetComponentInParent<BoxCollider2D>().transform.position;
+            Debug.Log("X:"+posCollider.x);
+            hitArea.transform.position = new Vector2(posCollider.x - 1f,posCollider.y);
+        }
+
         if (Time.time >= nextAttackTime)
         {
             if (Input.GetKeyDown(KeyCode.Mouse0))
@@ -29,7 +41,7 @@ public class CombatLogic : MonoBehaviour
                 nextAttackTime = Time.time + 1f / attackSpeed;
             }
         }
-        
+
     }
 
     void Attack()
