@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class cameraLock : MonoBehaviour
+public class CameraLock : MonoBehaviour
 {
 
     public GameObject player;

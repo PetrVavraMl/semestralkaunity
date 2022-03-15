@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class movementScript : MonoBehaviour
+public class MovementScript : MonoBehaviour
 {
     // Start is called before the first frame update
     public Vector2 vectorMove;
@@ -34,6 +34,8 @@ public class movementScript : MonoBehaviour
     public bool isAttacking = false;
     public Animator animator;
     public float knockbackStrength;
+    public BoxCollider2D colliderMain;
+    public BoxCollider2D colliderBottom;
 
     public void SavePlayer()
     {
@@ -103,6 +105,7 @@ public class movementScript : MonoBehaviour
         {
 
 
+
             if (Input.GetKey(KeyCode.A))
             {
                 isRunning = true;
@@ -169,9 +172,9 @@ public class movementScript : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-
+        string objName = collision.gameObject.name.Substring(0,10);
         //kolize s nep¯Ìtelem
-        if (collision.gameObject.name.Equals("Enemy") && isAlive)
+        if (objName.Equals("EnemySlime") && isAlive)
         {
             animator.SetTrigger("hitTrigger");
             //odhozenÌ hr·Ëe p¯i kolizi s nep¯Ìtelem
@@ -247,12 +250,19 @@ public class movementScript : MonoBehaviour
         Debug.Log("Nazev objektu: " + objectName);
         if (objectName.Equals("coi"))
         {
+            Transform soundCoin = transform.Find("SoundCoin");
+            soundCoin.GetComponent<AudioSource>().Play();
             Debug.Log("Je to mince");
             score += 10;
             scoreText.text = "Score: " + score;
             //spusù coroutine pro vyhlazenÌ pohybu mince k hr·Ëi - coroutina na konci objekt smaûe
             StartCoroutine(LerpPosition(0.3f, collision.gameObject));
         }
+        if (collision.gameObject.name.Equals("DropCollider"))
+        {
+            SceneManager.LoadScene(sceneName: "MainGame");
+        }
+
     }
 
 
@@ -261,6 +271,8 @@ public class movementScript : MonoBehaviour
     {
         if (!isInvincible)
         {
+            Transform soundCoin = transform.Find("SoundHurt");
+            soundCoin.GetComponent<AudioSource>().Play();
             Debug.Log("HIT -10 HP");
             healthPoints -= ammount;
             StartCoroutine(BecomeInvincible());

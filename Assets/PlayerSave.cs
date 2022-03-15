@@ -9,7 +9,7 @@ public class PlayerSave
     public int healthPoints;
     public int score;
     public float[] position;
-    public PlayerSave(movementScript ms)
+    public PlayerSave(MovementScript ms)
     {
         healthPoints = ms.healthPoints;
         score = ms.score;

@@ -5,7 +5,7 @@ using UnityEngine;
 public class CombatLogic : MonoBehaviour
 {
     // Start is called before the first frame update
-    public int attackDamage = 10;
+    public int attackDamage;
     public Transform hitArea;
     public float attackRange = 1.5f;
     public LayerMask enemyLayers;
@@ -14,7 +14,7 @@ public class CombatLogic : MonoBehaviour
     public Animator animator;
     void Start()
     {
-
+        attackDamage = 50 ;
     }
 
     // Update is called once per frame
@@ -28,14 +28,15 @@ public class CombatLogic : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.A))
         {
             Vector2 posCollider = GetComponentInParent<BoxCollider2D>().transform.position;
-            Debug.Log("X:"+posCollider.x);
-            hitArea.transform.position = new Vector2(posCollider.x - 1f,posCollider.y);
+            Debug.Log("X:" + posCollider.x);
+            hitArea.transform.position = new Vector2(posCollider.x - 1f, posCollider.y);
         }
 
         if (Time.time >= nextAttackTime)
         {
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
+                Debug.Log("ATAK");
                 animator.SetTrigger("attackTrigger");
                 Attack();
                 nextAttackTime = Time.time + 1f / attackSpeed;
@@ -52,7 +53,7 @@ public class CombatLogic : MonoBehaviour
             if (hitEnemies[i] != null)
             {
                 Debug.Log("TREFIL: " + hitEnemies[i].name);
-                hitEnemies[i].GetComponentInParent<enemyAI>().TakeDamage(10, GetComponent<Collider2D>());
+                hitEnemies[i].GetComponentInParent<EnemyAI>().TakeDamage(attackDamage, GetComponent<Collider2D>());
             }
         }
     }

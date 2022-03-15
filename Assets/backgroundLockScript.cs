@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class backgroundLockScript : MonoBehaviour
+public class BackgroundLockScript : MonoBehaviour
 {
     // Start is called before the first frame update
     GameObject camera;

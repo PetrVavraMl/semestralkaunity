@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class switchSceneMainGame : MonoBehaviour
+public class SwitchSceneMainGame : MonoBehaviour
 {
     // Start is called before the first frame update
     private int buildIndex = 0;

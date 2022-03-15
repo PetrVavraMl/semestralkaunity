@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class colliderGround : MonoBehaviour
+public class ColliderGround : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
@@ -17,7 +17,7 @@ public class colliderGround : MonoBehaviour
     {
         if (collision.gameObject.name == "tilemap_collider")
         {
-            movementScript.isInAir = false;
+            MovementScript.isInAir = false;
         }
     }
 
@@ -25,7 +25,7 @@ public class colliderGround : MonoBehaviour
     {
         if (collision.gameObject.name == "tilemap_collider")
         {
-            movementScript.isInAir = true;
+            MovementScript.isInAir = true;
         }
     }
 

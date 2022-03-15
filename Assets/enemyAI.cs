@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class enemyAI : MonoBehaviour
+public class EnemyAI : MonoBehaviour
 {
     // Start is called before the first frame update
     float x;
@@ -12,12 +12,27 @@ public class enemyAI : MonoBehaviour
     public int health;
     public bool isInAir;
     ParticleSystem particleBlood;
-    
+    ParticleSystem particleDeath;
+    public Animator animator;
+    bool canMove;
+    public BoxCollider2D colliderPlayerMain;
+    public BoxCollider2D colliderPlayerBottom;
+    public bool isAlive;
+
+
+
+
     void Start()
     {
-        particleBlood = GetComponentInChildren<ParticleSystem>();
+        //najde objekty particle systémù - pouští se pomocí metody Die() a TakeDamage() 
+        Transform trBlood = transform.Find("ParticleHit");
+        Transform trDeath = transform.Find("ParticleDeath");
+        particleDeath = trDeath.GetComponent<ParticleSystem>();
+        particleBlood = trBlood.GetComponent<ParticleSystem>();
+        canMove = true;
 
         jumpHeight = 50;
+        isAlive = true;
         isInAir = false;
         health = 100;
         GetComponent<Rigidbody2D>().freezeRotation = true;
@@ -26,7 +41,7 @@ public class enemyAI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        
     }
     public void TakeDamage(int damage,Collider2D collider)
     {
@@ -63,9 +78,8 @@ public class enemyAI : MonoBehaviour
 
     private void Die()
     {
-        // dodìlat animaci smrti
         Debug.Log("enemy is DEAD");
-        Destroy(this.gameObject);
+        StartCoroutine(AnimationDieWait(0.7f));
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -80,20 +94,20 @@ public class enemyAI : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.gameObject.name.Equals("Player") && movementScript.isAlive == true)
+        if (collision.gameObject.name.Equals("Player") && MovementScript.isAlive == true && canMove)
         {
             RaycastHit2D rcHitLeft = Physics2D.Raycast(transform.position,Vector2.left);
             RaycastHit2D rcHitRight = Physics2D.Raycast(transform.position, Vector2.right);
             if (rcHitLeft != null && isInAir == false) {
                 float distance = Mathf.Abs(transform.position.x - rcHitLeft.point.x);
-                if (distance <= 10) {
+                if (distance <= 0.2) {
                     GetComponent<Rigidbody2D>().AddForce(transform.TransformDirection(Vector3.up) * jumpHeight);
                 }
             }
             if (rcHitRight != null && isInAir == false)
             {
                 float distance = Mathf.Abs(transform.position.x - rcHitRight.point.x);
-                if (distance <= 10)
+                if (distance <= 0.2)
                 {
                     GetComponent<Rigidbody2D>().AddForce(transform.TransformDirection(Vector3.up) * jumpHeight);
                 }
@@ -143,6 +157,45 @@ public class enemyAI : MonoBehaviour
         {
             isInAir = true;
         }
+
+    }
+
+   
+    public IEnumerator AnimationDieWait(float duration)
+    {
+        
+        animator.SetBool("isAlive",false);
+        animator.SetTrigger("OnDeath");
+        if (isAlive)
+        {
+            particleDeath.Play();
+        }
+        isAlive = false;
+
+        Transform trBody = transform.Find("ColliderBody");
+        Transform trBottom = transform.Find("ColliderGround");
+        //Transform colGround = transform.Find("ColliderGround");
+
+        BoxCollider2D collMain = trBody.GetComponent<BoxCollider2D>();
+        BoxCollider2D collBottom = trBottom.GetComponent<BoxCollider2D>();
+        Physics2D.IgnoreCollision(colliderPlayerMain, collMain);
+        Physics2D.IgnoreCollision(colliderPlayerBottom, collMain);
+
+        Physics2D.IgnoreCollision(colliderPlayerMain, collBottom);
+        Physics2D.IgnoreCollision(colliderPlayerBottom, collBottom);
+
+
+
+        //colGround.GetComponent<BoxCollider2D>().isTrigger = true;
+        canMove = false;
+        float time = 0;
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            yield return null;
+        }
+        //Destroy(this.gameObject);
+
 
     }
 }

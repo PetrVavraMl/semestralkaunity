@@ -23,9 +23,9 @@ public class AnimatorScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        animator.SetBool("isJumping", movementScript.isInAir);
-        animator.SetBool("isRunning", movementScript.isRunning);
-        animator.SetBool("isAlive", movementScript.isAlive);
+        animator.SetBool("isJumping", MovementScript.isInAir);
+        animator.SetBool("isRunning", MovementScript.isRunning);
+        animator.SetBool("isAlive", MovementScript.isAlive);
 
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public static class SystemSave
 {
-    public static void SavePlayer(movementScript ms)
+    public static void SavePlayer(MovementScript ms)
     {
         BinaryFormatter formatter = new BinaryFormatter();
         string path = Application.persistentDataPath + "/player.dyck";
