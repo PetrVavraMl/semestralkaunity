@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,19 +32,25 @@ public class MovementScript : MonoBehaviour
     public static bool isInAir;
     public static bool isAlive = true;
     public static bool isRunning;
+    public static bool canMove;
+    public int level;
     public bool isAttacking = false;
     public Animator animator;
     public float knockbackStrength;
     public BoxCollider2D colliderMain;
     public BoxCollider2D colliderBottom;
+    public SpriteRenderer map1SpriteRenderer;
+    public SpriteRenderer map2SpriteRenderer;
+
 
     public void SavePlayer()
     {
         SystemSave.SavePlayer(this);
     }
 
-    public void LoadPlayer() {
-        PlayerSave loadedData  = SystemSave.LoadPlayer();
+    public void LoadPlayer()
+    {
+        PlayerSave loadedData = SystemSave.LoadPlayer();
         healthPoints = loadedData.healthPoints;
         score = loadedData.score;
         transform.position = new Vector3(loadedData.position[0], loadedData.position[1], loadedData.position[2]);
@@ -53,6 +60,8 @@ public class MovementScript : MonoBehaviour
 
     void Start()
     {
+        level = 1;
+        canMove = true;
         knockbackStrength = 10;
         vectorMove = transform.position;
         rigidBody = GetComponent<Rigidbody2D>();
@@ -66,6 +75,7 @@ public class MovementScript : MonoBehaviour
         particleSystemRunRight = GameObject.Find("ParticleRunRight");
         Debug.Log("RESTART");
         isAlive = true;
+        checkBackground();
 
 
     }
@@ -82,7 +92,7 @@ public class MovementScript : MonoBehaviour
         }
 
 
-        if (Input.GetKeyDown(KeyCode.Space) && isInAir == false && isAlive)
+        if (Input.GetKeyDown(KeyCode.Space) && isInAir == false && isAlive && canMove)
         {
             vectorMove.y = vectorMove.y + jumpHeight * 2;
             rigidBody.AddForce(transform.TransformDirection(Vector3.up) * jumpHeight);
@@ -97,11 +107,11 @@ public class MovementScript : MonoBehaviour
     }
     private void FixedUpdate()
     {
-       
+
 
         vectorMove = transform.position;
         //pokud nenÌ hr·Ë mrtv˝ m˘ûe se spustit skript
-        if (isAlive)
+        if (isAlive && canMove)
         {
 
 
@@ -172,7 +182,7 @@ public class MovementScript : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        string objName = collision.gameObject.name.Substring(0,10);
+        string objName = collision.gameObject.name.Substring(0, 10);
         //kolize s nep¯Ìtelem
         if (objName.Equals("EnemySlime") && isAlive)
         {
@@ -236,36 +246,68 @@ public class MovementScript : MonoBehaviour
     //}
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        string objectName = collision.gameObject.name.Substring(0, 3);
-        //p¯i kolizi s objektem diamant ho smaû
-        if (objectName.Equals("gem"))
+        //BUG - obËas se zapoËÌt· coin 2 kr·t, pravdÏpodobnÏ se d· vy¯eöit ignorov·nÌm kolize(Physics2D.IgnoreCollision)
+        if (collision != null)
         {
-            score += 25;
-            scoreText.text = "Score: " + score;
-            //spusù coroutine pro vyhlazenÌ pohybu gemu k hr·Ëi - coroutina na konci objekt smaûe
-            StartCoroutine(LerpPosition(0.2f, collision.gameObject));
+            string objectName = collision.gameObject.name.Substring(0, 3);
+            //p¯i kolizi s objektem diamant ho smaû
+            if (objectName.Equals("gem"))
+            {
+                score += 25;
+                scoreText.text = "Score: " + score;
+                //spusù coroutine pro vyhlazenÌ pohybu gemu k hr·Ëi - coroutina na konci objekt smaûe
+                StartCoroutine(LerpPosition(0.2f, collision.gameObject));
+            }
+
+            //p¯i kolizi s mincÌ ji smaû
+            Debug.Log("Nazev objektu: " + objectName);
+            if (objectName.Equals("coi") && collision != null)
+            {
+                Transform soundCoin = transform.Find("SoundCoin");
+                soundCoin.GetComponent<AudioSource>().Play();
+                Debug.Log("Je to mince");
+                score += 10;
+                scoreText.text = "Score: " + score;
+                //spusù coroutine pro vyhlazenÌ pohybu mince k hr·Ëi - coroutina na konci objekt smaûe
+                StartCoroutine(LerpPosition(0.3f, collision.gameObject));
+            }
+            if (collision.gameObject.name.Equals("DropCollider"))
+            {
+                SceneManager.LoadScene(sceneName: "MainGame");
+            }
+            //teleport do dalöÌ mapy, zmÏna levelu na 2
+            if (collision.gameObject.name.Equals("portal-bottom"))
+            {
+                Debug.Log("PORTAL:!");
+                transform.position = new Vector2(0, -56);
+                level = 2;
+                //zavol· metodu check background kter· nastavÌ pozadÌ dle mapy
+                checkBackground();
+            }
         }
 
-        //p¯i kolizi s mincÌ ji smaû
-        Debug.Log("Nazev objektu: " + objectName);
-        if (objectName.Equals("coi"))
-        {
-            Transform soundCoin = transform.Find("SoundCoin");
-            soundCoin.GetComponent<AudioSource>().Play();
-            Debug.Log("Je to mince");
-            score += 10;
-            scoreText.text = "Score: " + score;
-            //spusù coroutine pro vyhlazenÌ pohybu mince k hr·Ëi - coroutina na konci objekt smaûe
-            StartCoroutine(LerpPosition(0.3f, collision.gameObject));
-        }
-        if (collision.gameObject.name.Equals("DropCollider"))
-        {
-            SceneManager.LoadScene(sceneName: "MainGame");
-        }
 
     }
 
+    private void checkBackground()
+    {
+        map1SpriteRenderer.enabled = false;
+        map2SpriteRenderer.enabled = false;
+        switch (level)
+        {
+            case 1:
+                map1SpriteRenderer.enabled = true;
 
+                break;
+            case 2:
+                map2SpriteRenderer.enabled = true;
+                break;
+            case 3:
+                break;
+            default:
+                break;
+        }
+    }
 
     private void LoseHealth(int ammount)
     {

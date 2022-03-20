@@ -5,16 +5,16 @@ using UnityEngine;
 public class CombatLogic : MonoBehaviour
 {
     // Start is called before the first frame update
-    public int attackDamage;
+    public static int attackDamage;
     public Transform hitArea;
-    public float attackRange = 1.5f;
+    public static float attackRange = 1.5f;
     public LayerMask enemyLayers;
     public float attackSpeed = 2f;
     float nextAttackTime = 0f;
     public Animator animator;
     void Start()
     {
-        attackDamage = 50 ;
+        attackDamage = 25;
     }
 
     // Update is called once per frame
