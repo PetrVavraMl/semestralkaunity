@@ -1,0 +1,74 @@
+sprity,animace,pozadí,zvuky  - /assets/own/* - vlastní tvorba
+
+sprity hráče - /assets/Medieval Warrior Pack 2/* - https://assetstore.unity.com/packages/2d/characters/medieval-warrior-pack-2-174788 
+Standard Unity Asset Store EULA(Extension Asset)
+https://unity3d.com/legal/as_terms?_gl=1*9zx11v*_gcl_aw*R0NMLjE2NDgxNTA1OTcuQ2p3S0NBandyZkNSQmhBWEVpd0Fua21LbWV0aUxlREVTZl9wQnVEaWdGNHBaNjdRN3JUSjZ4NTNIb09ZejVMYXhDaVF5QVJHUXBreGlSb0N0N2tRQXZEX0J3RQ..*_gcl_dc*R0NMLjE2NDgxNTA1OTcuQ2p3S0NBandyZkNSQmhBWEVpd0Fua21LbWV0aUxlREVTZl9wQnVEaWdGNHBaNjdRN3JUSjZ4NTNIb09ZejVMYXhDaVF5QVJHUXBreGlSb0N0N2tRQXZEX0J3RQ..&_ga=2.244166021.1442931013.1648375580-795256406.1645214397&_gac=1.225184232.1648150597.CjwKCAjwrfCRBhAXEiwAnkmKmetiLeDESf_pBuDigF4pZ67Q7rTJ6x53HoOYz5LaxCiQyARGQpkxiRoCt7kQAvD_BwE
+
+sprity itemů - /assets/2D Pixel item Asset Pack/* - https://assetstore.unity.com/packages/2d/gui/icons/2d-pixel-item-asset-pack-99645
+Standard Unity Asset Store EULA(Extension Asset)
+https://unity3d.com/legal/as_terms?_gl=1*9zx11v*_gcl_aw*R0NMLjE2NDgxNTA1OTcuQ2p3S0NBandyZkNSQmhBWEVpd0Fua21LbWV0aUxlREVTZl9wQnVEaWdGNHBaNjdRN3JUSjZ4NTNIb09ZejVMYXhDaVF5QVJHUXBreGlSb0N0N2tRQXZEX0J3RQ..*_gcl_dc*R0NMLjE2NDgxNTA1OTcuQ2p3S0NBandyZkNSQmhBWEVpd0Fua21LbWV0aUxlREVTZl9wQnVEaWdGNHBaNjdRN3JUSjZ4NTNIb09ZejVMYXhDaVF5QVJHUXBreGlSb0N0N2tRQXZEX0J3RQ..&_ga=2.244166021.1442931013.1648375580-795256406.1645214397&_gac=1.225184232.1648150597.CjwKCAjwrfCRBhAXEiwAnkmKmetiLeDESf_pBuDigF4pZ67Q7rTJ6x53HoOYz5LaxCiQyARGQpkxiRoCt7kQAvD_BwE
+
+sprity bedny - /assets/Sunny Land Forest Assets/* - https://assetstore.unity.com/packages/2d/characters/sunny-land-forest-108124
+Standard Unity Asset Store EULA(Extension Asset)
+https://unity3d.com/legal/as_terms?_gl=1*9zx11v*_gcl_aw*R0NMLjE2NDgxNTA1OTcuQ2p3S0NBandyZkNSQmhBWEVpd0Fua21LbWV0aUxlREVTZl9wQnVEaWdGNHBaNjdRN3JUSjZ4NTNIb09ZejVMYXhDaVF5QVJHUXBreGlSb0N0N2tRQXZEX0J3RQ..*_gcl_dc*R0NMLjE2NDgxNTA1OTcuQ2p3S0NBandyZkNSQmhBWEVpd0Fua21LbWV0aUxlREVTZl9wQnVEaWdGNHBaNjdRN3JUSjZ4NTNIb09ZejVMYXhDaVF5QVJHUXBreGlSb0N0N2tRQXZEX0J3RQ..&_ga=2.244166021.1442931013.1648375580-795256406.1645214397&_gac=1.225184232.1648150597.CjwKCAjwrfCRBhAXEiwAnkmKmetiLeDESf_pBuDigF4pZ67Q7rTJ6x53HoOYz5LaxCiQyARGQpkxiRoCt7kQAvD_BwE
+
+pixel art font - /assets/Fonts/yoster.tff
+licence:
+/assets/Fonts/license.txt
+https://www.1001fonts.com/licenses/general-font-usage-terms.html
+
+rpg balíček zvůků - /assets/kenney_rpgaudio/*
+licence: 
+/assets/kenney_rpgaudio/License.txt
+
+balíček zvůků meče - /assets/sword_-_starninjas/*
+licence:
+https://opengameart.org/content/20-sword-sound-effects-attacks-and-clashes
+https://creativecommons.org/publicdomain/zero/1.0/
+
+muzika v menu - /assets/Music/CHIPTUNE_The_Old_Tower_Inn
+Licence:
+https://creativecommons.org/publicdomain/zero/1.0/
+Music: https://www.chosic.com/free-music/all/
+
+muzika ve hře - 
+/assets/Music/Our-Mountain_v003_Looping.mp3
+/assets/Music/More-Sewer-Creepers_Looping.mp3
+/assets/Music/The-Streets-of-Mumbai_Looping.mp3
+
+Autor vyžaduje atribuci, provedeno v menu - Credits
+https://soundimage.org/fantasywonder/
+https://soundimage.org/sample-page/
+
+boss animace /assets/Mecha-stone Golem 0.1
+https://darkpixel-kronovi.itch.io/mecha-golem-free
+
+
+Přechody scén
+https://www.youtube.com/watch?v=CE9VOZivb3I
+Smooth jump
+https://answers.unity.com/questions/1456192/please-help-me-make-a-smooth-jump-script.html
+Akce při kliknutí na tlačítko
+https://docs.unity3d.com/530/Documentation/ScriptReference/UI.Button-onClick.html
+Změna UI Textu v kódu
+https://answers.unity.com/questions/777335/46-ui-changing-the-text-component-via-script.html
+Particle systems
+https://www.youtube.com/watch?v=_z68_OoC_0o
+Vyhlazení pohybu interpolací - lerp
+https://gamedevbeginner.com/the-right-way-to-lerp-in-unity-with-examples/#lerp_vector2
+Combat system
+https://www.youtube.com/watch?v=sPiVz1k-fEs
+Přilepení hráče na pohybující se platformu
+https://www.youtube.com/watch?v=O6wlIqe2lTA
+Invincibility frames
+https://www.aleksandrhovhannisyan.com/blog/invulnerability-frames-in-unity/#implementing-invulnerability-frames-in-unity-with-coroutines!
+Návod na animaci
+https://www.youtube.com/watch?v=hkaysu1Z-N8&ab_channel=Brackeys
+Návod na ukládání a načítání dat
+https://www.youtube.com/watch?v=XOjd_qU2Ido&ab_channel=Brackeys
+Článek o interpolaci průhlednosti
+https://answers.unity.com/questions/654836/unity2d-sprite-fade-in-and-out.html
+Práce s osvětlením v unity
+https://www.youtube.com/watch?v=nkgGyO9VG54
+Návod na bosse
+https://www.youtube.com/watch?v=AD4JIXQDw0s

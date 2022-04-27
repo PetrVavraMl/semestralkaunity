@@ -1,0 +1,30 @@
+TODO:
+spiky na druhé mapì které zabijí hráèe pøi kolizi
+doladit pohyb Enemy2AI
+Tabulka nejlepších výsledkù(po tøetí mapì)
+ukládání coinù a gemù pøi uložení hráèe
+naèítání hráèe z hlavního menu
+novou grafiku pro hl. menu
+EnemyBoss + mapa
+tøetí mapa a pøechod na ní z druhé mapy
+grafika pro HP
+muzika, audio(zatím pouze playerHit a coinPickup)
+
+DONE:
+první mapa
+pohybující se platformy
+coiny a gemy(animace + sprity)
+Pohyb hráèe (A, S, D, SPACE)
+Bojový systém hráèe(HP, Damage, LMB pro útok)
+EnemyAI(Slime) - pohyb, schopnost utržit a zpùsobit poškození, particly pøi zásahu a pøi smrti
+Enemy2AI(Bat) - pohyb, schopnost utržit a zpùsobit poškození, particly pøi zásahu a pøi smrti
+Kresba pozadí mapy 1 a 2, sprity terénu,tilemapy
+Bedna s lepším meèem, portál který teleportuje na další mapu, odpovídající particly
+UI pøi stisknutí klávesy ESC - pauza hry, možnost uložit a naèíst hru, restartovat hru a ukonèit hru
+particly pøi bìhu(mìní barvu dle mapy)
+uzamèení pozadí na hráèe
+ukládání a naèítání hry pøes pauzu hry(ESC)
+druhá mapa - sprity, tilemapy, Light2D
+
+
+

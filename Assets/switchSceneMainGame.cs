@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class SwitchSceneMainGame : MonoBehaviour
 {
     // Start is called before the first frame update
-    private int buildIndex = 0;
+    public Animator animatorFade;
     void Start()
     {
         Button btn = GetComponent<Button>();
@@ -20,7 +20,15 @@ public class SwitchSceneMainGame : MonoBehaviour
     }
     private void TaskOnClick()
     {
-        SceneManager.LoadScene(sceneName:"MainGame");
+        animatorFade.SetTrigger("onMapChange1");
+        StartCoroutine(WaitForFade(1));
+        
+    }
+
+    private IEnumerator WaitForFade(int seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        SceneManager.LoadScene(sceneName: "MainGame");
     }
 
 }

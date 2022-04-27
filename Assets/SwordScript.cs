@@ -7,6 +7,7 @@ public class SwordScript : MonoBehaviour
     // Start is called before the first frame update
     public Animator animatorPlayer;
     public AnimatorOverrideController overrideController;
+    public Transform swordPickedUpSound;
     void Start()
     {
         
@@ -26,6 +27,8 @@ public class SwordScript : MonoBehaviour
             animatorPlayer.runtimeAnimatorController = overrideController;
             CombatLogic.attackRange = 2.5f;
             CombatLogic.attackDamage = 50;
+            swordPickedUpSound.GetComponent<AudioSource>().Play();
+
         }
         
     }

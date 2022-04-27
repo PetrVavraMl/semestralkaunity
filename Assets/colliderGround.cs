@@ -6,16 +6,16 @@ public class ColliderGround : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
-    {        
+    {
     }
 
-    // Update is called once per frame
-    void Update()
-    {        
-    }
     private void OnCollisionStay2D(Collision2D collision)
     {
-        if (collision.gameObject.name == "tilemap_collider")
+        if (
+            collision.gameObject.name == "tilemap_collider"
+            || collision.gameObject.name == "platform1"
+            || collision.gameObject.name == "platform2"
+            )
         {
             MovementScript.isInAir = false;
         }
@@ -23,7 +23,11 @@ public class ColliderGround : MonoBehaviour
 
     private void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.name == "tilemap_collider")
+        if (
+            collision.gameObject.name == "tilemap_collider"
+            || collision.gameObject.name == "platform1"
+            || collision.gameObject.name == "platform2"
+            )
         {
             MovementScript.isInAir = true;
         }

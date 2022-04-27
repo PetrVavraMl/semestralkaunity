@@ -36,7 +36,7 @@ public class CombatLogic : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.Mouse0))
             {
-                Debug.Log("ATAK");
+                Debug.Log("ATTACK");
                 animator.SetTrigger("attackTrigger");
                 Attack();
                 nextAttackTime = Time.time + 1f / attackSpeed;
@@ -47,13 +47,26 @@ public class CombatLogic : MonoBehaviour
 
     void Attack()
     {
+        //získá všechny collidery které jsou v hit oblasti a vloží je do pole
         Collider2D[] hitEnemies = Physics2D.OverlapCircleAll(hitArea.position, attackRange, enemyLayers);
         for (int i = 0; i < hitEnemies.Length; i++)
         {
             if (hitEnemies[i] != null)
             {
+                //zjistí o který typ nepøítele se jedná a zavolá jeho metodu TakeDamage()
                 Debug.Log("TREFIL: " + hitEnemies[i].name);
-                hitEnemies[i].GetComponentInParent<EnemyAI>().TakeDamage(attackDamage, GetComponent<Collider2D>());
+                if (hitEnemies[i].GetComponentInParent<EnemyAI>() != null)
+                {
+                    hitEnemies[i].GetComponentInParent<EnemyAI>().TakeDamage(attackDamage, GetComponent<Collider2D>());
+                }
+                if (hitEnemies[i].GetComponentInParent<Enemy2AI>() != null)
+                {
+                    hitEnemies[i].GetComponentInParent<Enemy2AI>().TakeDamage(attackDamage, GetComponent<Collider2D>());
+                }
+                if (hitEnemies[i].GetComponentInParent<BossScript>() != null)
+                {
+                    hitEnemies[i].GetComponentInParent<BossScript>().TakeDamage(attackDamage);
+                }
             }
         }
     }

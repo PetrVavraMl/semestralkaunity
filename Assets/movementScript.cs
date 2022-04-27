@@ -41,6 +41,17 @@ public class MovementScript : MonoBehaviour
     public BoxCollider2D colliderBottom;
     public SpriteRenderer map1SpriteRenderer;
     public SpriteRenderer map2SpriteRenderer;
+    public SpriteRenderer map3SpriteRenderer;
+    public AnimatorOverrideController overrideController;
+    public Transform map1Music;
+    public Transform map2Music;
+    public Transform map3Music;
+    public Animator animatorFade;
+    private bool facingLeft;
+    public Transform firePoint;
+    public Text textHS;
+    public Canvas canvasEnd;
+
 
 
     public void SavePlayer()
@@ -56,10 +67,13 @@ public class MovementScript : MonoBehaviour
         transform.position = new Vector3(loadedData.position[0], loadedData.position[1], loadedData.position[2]);
         scoreText.text = "Score: " + score;
         healthText.text = "Health: " + healthPoints;
+        level = loadedData.level;
+        checkLevel();
     }
 
     void Start()
     {
+        canvasEnd.enabled = false;
         level = 1;
         canMove = true;
         knockbackStrength = 10;
@@ -75,7 +89,8 @@ public class MovementScript : MonoBehaviour
         particleSystemRunRight = GameObject.Find("ParticleRunRight");
         Debug.Log("RESTART");
         isAlive = true;
-        checkBackground();
+        facingLeft = false;
+        checkLevel();
 
 
     }
@@ -86,9 +101,6 @@ public class MovementScript : MonoBehaviour
         if (healthPoints <= 0)
         {
             isAlive = false;
-
-
-
         }
 
 
@@ -102,6 +114,22 @@ public class MovementScript : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.P))
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
+        if (Input.GetKeyDown(KeyCode.A))
+        {
+            if (!facingLeft)
+            {
+                flipFirePoint();
+            }
+
+        }
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            if (facingLeft)
+            {
+                flipFirePoint();
+
+            }
         }
 
     }
@@ -120,6 +148,7 @@ public class MovementScript : MonoBehaviour
             {
                 isRunning = true;
                 spriteRenderer.flipX = true;
+                //flipPlayer();
 
                 if (!isInAir)
                 {
@@ -136,6 +165,7 @@ public class MovementScript : MonoBehaviour
             {
                 isRunning = true;
                 spriteRenderer.flipX = false;
+                //flipPlayer();
                 if (!isInAir)
                 {
                     particleSystemRun.transform.position = new Vector2(transform.position.x, transform.position.y - offset);
@@ -152,7 +182,14 @@ public class MovementScript : MonoBehaviour
             //zapnutÌ a vypnutÌ animace particl˘ p¯i bÏhu
             if (Input.GetKey(KeyCode.A))
             {
-                particleRunRight.enableEmission = true;
+                if (!isInAir)
+                {
+                    particleRunRight.enableEmission = true;
+                }
+                else
+                {
+                    particleRunRight.enableEmission = false;
+                }
             }
             else
             {
@@ -161,7 +198,14 @@ public class MovementScript : MonoBehaviour
 
             if (Input.GetKey(KeyCode.D))
             {
-                particleRun.enableEmission = true;
+                if (!isInAir)
+                {
+                    particleRun.enableEmission = true;
+                }
+                else
+                {
+                    particleRun.enableEmission = false;
+                }
             }
             else
             {
@@ -180,11 +224,17 @@ public class MovementScript : MonoBehaviour
 
     }
 
+    private void flipFirePoint()
+    {
+        facingLeft = !facingLeft;
+        firePoint.transform.Rotate(0f, 180f, 0f);
+    }
+
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        string objName = collision.gameObject.name.Substring(0, 10);
+        string objName = collision.gameObject.name.Substring(0, 6);
         //kolize s nep¯Ìtelem
-        if (objName.Equals("EnemySlime") && isAlive)
+        if (objName.Equals("EnemyS") || objName.Equals("EnemyB") && isAlive)
         {
             animator.SetTrigger("hitTrigger");
             //odhozenÌ hr·Ëe p¯i kolizi s nep¯Ìtelem
@@ -209,50 +259,44 @@ public class MovementScript : MonoBehaviour
             }
 
             LoseHealth(10);
-            healthText.text = "Health: " + healthPoints;
+
         }
+
+    }
+    public void pushPlayer(GameObject enemyObject)
+    {
+
+        if (enemyObject.transform.position.x > transform.position.x)
+        {
+            Vector2 difference = (transform.position - enemyObject.transform.position).normalized;
+            Vector2 force = difference * knockbackStrength;
+            rigidBody.AddForce(force, ForceMode2D.Impulse);
+
+        }
+        if (enemyObject.transform.position.x < transform.position.x)
+        {
+            Vector2 difference = (transform.position - enemyObject.transform.position).normalized;
+            Vector2 force = difference * knockbackStrength;
+            rigidBody.AddForce(force, ForceMode2D.Impulse);
+        }
+
     }
 
-
-    //nahrazeno dalsim colliderem a skriptem colliderGround.cs
-    //private void OnCollisionStay2D(Collision2D collision)
-    //{
-    //    //Debug.Log("kolider: " + collision.collider);
-    //    //if (collision.collider == colliderGround)
-    //    //{
-    //    //    Debug.Log("Dotykam se zeme");
-    //    //    if (collision.gameObject.name == "ground_collider" || collision.gameObject.name == "tilemap_collider")
-    //    //    {
-    //    //        isInAir = false;
-
-
-    //    //    }
-    //    //}
-
-
-    //}
-    //private void OnCollisionExit2D(Collision2D collision)
-    //{
-    //    if (collision.collider == colliderGround)
-    //    {
-    //        if (collision.gameObject.name == "ground_collider" || collision.gameObject.name == "tilemap_collider")
-    //        {
-    //            isInAir = true;
-
-
-    //        }
-    //    }
-
-    //}
     private void OnTriggerEnter2D(Collider2D collision)
     {
         //BUG - obËas se zapoËÌt· coin 2 kr·t, pravdÏpodobnÏ se d· vy¯eöit ignorov·nÌm kolize(Physics2D.IgnoreCollision)
         if (collision != null)
         {
             string objectName = collision.gameObject.name.Substring(0, 3);
+
+            //odhodÌ hr·Ëe
+
+
             //p¯i kolizi s objektem diamant ho smaû
             if (objectName.Equals("gem"))
             {
+                Transform soundGem = transform.Find("SoundGem");
+                soundGem.GetComponent<AudioSource>().Play();
                 score += 25;
                 scoreText.text = "Score: " + score;
                 //spusù coroutine pro vyhlazenÌ pohybu gemu k hr·Ëi - coroutina na konci objekt smaûe
@@ -278,46 +322,139 @@ public class MovementScript : MonoBehaviour
             //teleport do dalöÌ mapy, zmÏna levelu na 2
             if (collision.gameObject.name.Equals("portal-bottom"))
             {
-                Debug.Log("PORTAL:!");
-                transform.position = new Vector2(0, -56);
+                animatorFade.SetTrigger("onMapChange2");
+                Debug.Log("PORTAL 1");
+                Vector2 posPort = new Vector2(0, -56);
+                //coroutina waitforteleport poËk· neû se ztmavÌ obrazovka, potÈ teleportuje hr·Ëe a zavol· metodu checkLevel()
+                StartCoroutine(WaitForTeleport(posPort, 2, "onMapChange3"));
                 level = 2;
-                //zavol· metodu check background kter· nastavÌ pozadÌ dle mapy
-                checkBackground();
+                //zavol· metodu check level kter· nastavÌ pozadÌ,particly a animace dle mapy 
+
+            }
+            if (collision.gameObject.name.Equals("portal-bottom-2"))
+            {
+                animatorFade.SetTrigger("onMapChange2");
+                Debug.Log("PORTAL 2");
+                Vector2 posPort = new Vector2(-50, -144.5f);
+                //coroutina waitforteleport poËk· neû se ztmavÌ obrazovka, potÈ teleportuje hr·Ëe a zavol· metodu checkLevel()
+                StartCoroutine(WaitForTeleport(posPort, 2, "onMapChange3"));
+                level = 3;
+                //zavol· metodu check level kter· nastavÌ pozadÌ,particly a animace dle mapy
+            }
+            if (collision.gameObject.name.Equals("portal-bottom-3"))
+            {
+                animatorFade.SetTrigger("onMapChange2");
+                Debug.Log("PORTAL 3");
+                Vector2 posPort = new Vector2(400, -122);
+                //coroutina waitforteleport poËk· neû se ztmavÌ obrazovka, potÈ teleportuje hr·Ëe a zavol· metodu checkLevel()
+                StartCoroutine(WaitForTeleport(posPort, 2, "onMapChange3"));
+                level = 4;
+                //zavol· metodu check level kter· nastavÌ pozadÌ,particly a animace dle mapy
             }
         }
 
 
     }
 
-    private void checkBackground()
+    //metoda kter· zajiöùuje nastavenÌ atribut˘ hr·Ëe podle levelu(particly,animace,pozadÌ)
+    private void checkLevel()
     {
         map1SpriteRenderer.enabled = false;
         map2SpriteRenderer.enabled = false;
+        map3SpriteRenderer.enabled = false;
+        map1Music.GetComponent<AudioSource>().Stop();
+        map2Music.GetComponent<AudioSource>().Stop();
+        map3Music.GetComponent<AudioSource>().Stop();
         switch (level)
         {
             case 1:
                 map1SpriteRenderer.enabled = true;
-
+                map1Music.GetComponent<AudioSource>().Play();
                 break;
             case 2:
                 map2SpriteRenderer.enabled = true;
+                map2Music.GetComponent<AudioSource>().Play();
+                Color colorGray = new Color(47 / 255f, 62 / 255f, 69 / 255f);
+                particleRun.startColor = colorGray;
+                particleRunRight.startColor = colorGray;
+                animator.runtimeAnimatorController = overrideController;
+                CombatLogic.attackDamage = 50;
+                CombatLogic.attackRange = 2.5f;
                 break;
             case 3:
+                map3Music.GetComponent<AudioSource>().Play();
+                CombatLogic.attackDamage = 50;
+                CombatLogic.attackRange = 2.5f;
+                Color colorYellow = new Color(227 / 255f, 173 / 255f, 80 / 255f);
+                particleRunRight.startColor = colorYellow;
+                particleRun.startColor = colorYellow;
+                animator.runtimeAnimatorController = overrideController;
+                map3SpriteRenderer.enabled = true;
+                scoreText.color = Color.black;
+                healthText.color = Color.black;
+                break;
+            case 4:
+                map2SpriteRenderer.enabled = true;
+                map2Music.GetComponent<AudioSource>().Play();
+                Color colorGrayBoss = new Color(47 / 255f, 62 / 255f, 69 / 255f);
+                particleRun.startColor = colorGrayBoss;
+                particleRunRight.startColor = colorGrayBoss;
+                animator.runtimeAnimatorController = overrideController;
+                CombatLogic.attackDamage = 50;
+                CombatLogic.attackRange = 2.5f;
+                scoreText.color = Color.white;
+                healthText.color = Color.white;
+                GameObject.FindGameObjectWithTag("Boss").transform.GetComponent<BossScript>().AwakeBoss();
+                break;
+            case 5:
+
                 break;
             default:
                 break;
         }
     }
 
-    private void LoseHealth(int ammount)
+    public void FinishTheGame()
+    {
+        //canMove = false;
+        StartCoroutine(WaitForEnd(6));
+        StartCoroutine(WaitForCanvas(8, "onMapChange3"));
+
+        Debug.Log("CANVAS: " + canvasEnd.enabled);
+        Debug.Log("HRA DOKONCENA!");
+        //naËte uloûenÈ skÛre a porovn· s nov˝m
+        int oldHS = PlayerPrefs.GetInt("HS");
+        if (oldHS < score)
+        {
+            Debug.Log("NOVE HS!!!");
+            PlayerPrefs.SetInt("HS", score);
+            string hsText = "You beat the last highscore with " + score + " points.";
+            textHS.text = hsText;
+        }
+        else if (oldHS > score)
+        {
+            string hsText = "The highscore to beat is " + oldHS + " points.\n Your score is " + score + " points.";
+            textHS.text = hsText;
+        }
+        else
+        {
+            string hsText = "You reached the same score as the current highscore of " + score + " points. \n Just short!";
+            textHS.text = hsText;
+        }
+
+
+    }
+
+    public void LoseHealth(int ammount)
     {
         if (!isInvincible)
         {
             Transform soundCoin = transform.Find("SoundHurt");
             soundCoin.GetComponent<AudioSource>().Play();
-            Debug.Log("HIT -10 HP");
+            Debug.Log("HIT -" + ammount + "HP");
             healthPoints -= ammount;
             StartCoroutine(BecomeInvincible());
+            healthText.text = "Health: " + healthPoints;
         }
     }
 
@@ -326,6 +463,27 @@ public class MovementScript : MonoBehaviour
         isInvincible = true;
         yield return new WaitForSeconds(invincibilityDurationSeconds);
         isInvincible = false;
+    }
+    private IEnumerator WaitForTeleport(Vector2 pos, int seconds, string triggerParams)
+    {
+        yield return new WaitForSeconds(seconds);
+        transform.position = pos;
+        checkLevel();
+        animatorFade.SetTrigger(triggerParams);
+    }
+
+    private IEnumerator WaitForCanvas(int seconds, string triggerParams)
+    {
+        yield return new WaitForSeconds(seconds);
+        animatorFade.SetTrigger(triggerParams);
+        canvasEnd.enabled = true;
+    }
+
+    private IEnumerator WaitForEnd(int seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        animatorFade.SetTrigger("onMapChange2");
+
     }
 
     IEnumerator LerpPosition(float duration, GameObject collisionObjekt)
@@ -351,7 +509,6 @@ public class MovementScript : MonoBehaviour
             yield return null;
         }
         isAttacking = false;
-
     }
 
 

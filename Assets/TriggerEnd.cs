@@ -14,6 +14,8 @@ public class TriggerEnd : MonoBehaviour
     public GameObject objectSword;
     public ParticleSystem particleSystemSword;
     public Animator animatorPortal;
+    public Transform chestOpenSound;
+    
 
     void Start()
     {
@@ -35,8 +37,7 @@ public class TriggerEnd : MonoBehaviour
         //zakáže pohyb hráèi, pohne sprite smìrem nahoru a zmìní jeho prùhlednost pomocí coroutine
         if (!isChestOpened)
         {
-            
-            Debug.Log("E PRESSED");
+            chestOpenSound.GetComponent<AudioSource>().Play();
             rendererChestClosed.enabled = false;
             rendererChestOpen.enabled = true;
             rendererSword.enabled = true;

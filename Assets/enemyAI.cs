@@ -18,6 +18,7 @@ public class EnemyAI : MonoBehaviour
     public BoxCollider2D colliderPlayerMain;
     public BoxCollider2D colliderPlayerBottom;
     public bool isAlive;
+    public Transform soundHit;
 
 
 
@@ -45,7 +46,8 @@ public class EnemyAI : MonoBehaviour
     }
     public void TakeDamage(int damage,Collider2D collider)
     {
-        //TODO death animace
+        
+        soundHit.GetComponent<AudioSource>().Play();
         health -= damage;
         particleBlood.Play();
         GetComponent<Rigidbody2D>().AddForce(transform.up * 0.2f, ForceMode2D.Impulse);
@@ -54,20 +56,7 @@ public class EnemyAI : MonoBehaviour
         Vector2 difference = (transform.position - collider.transform.position).normalized;
         Vector2 force = difference * 2;
         GetComponent<Rigidbody2D>().AddForce(force, ForceMode2D.Impulse);
-        //if (transform.position.x < x1)
-        //{
-           
-            //transform.position = new Vector3(transform.position.x -5, transform.position.y, 0);
-            //Vector2 endPos = new Vector2(transform.position.x - 2, transform.position.y);  
-            //StartCoroutine(LerpPosition(2,this,endPos))
-            //GetComponent<Rigidbody2D>().AddForce(transform.TransformDirection(Vector3.left) * 150);
-        //}
-        //if (transform.position.x > x1) {
-        //    Vector2 difference = (transform.position - collider.transform.position).normalized;
-        //    Vector2 force = difference * 5;
-        //    GetComponent<Rigidbody2D>().AddForce(force, ForceMode2D.Impulse);
-        //    //GetComponent<Rigidbody2D>().AddForce(transform.TransformDirection(Vector3.right) * 150);
-        //}
+       
 
         Debug.Log("ENEMY DAMAGE TAKEN");
         if (health <= 0)
@@ -82,15 +71,15 @@ public class EnemyAI : MonoBehaviour
         StartCoroutine(AnimationDieWait(0.7f));
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.name.Equals("Player"))
-        {
-            //float x = collision.transform.position.x;
-            //float y = collision.transform.position.y;
-            //transform.position = new Vector2(x - 50, y);
-        }
-    }
+    //private void OnTriggerEnter2D(Collider2D collision)
+    //{
+    //    if (collision.gameObject.name.Equals("Player"))
+    //    {
+    //        //float x = collision.transform.position.x;
+    //        //float y = collision.transform.position.y;
+    //        //transform.position = new Vector2(x - 50, y);
+    //    }
+    //}
 
     private void OnTriggerStay2D(Collider2D collision)
     {
@@ -174,7 +163,6 @@ public class EnemyAI : MonoBehaviour
 
         Transform trBody = transform.Find("ColliderBody");
         Transform trBottom = transform.Find("ColliderGround");
-        //Transform colGround = transform.Find("ColliderGround");
 
         BoxCollider2D collMain = trBody.GetComponent<BoxCollider2D>();
         BoxCollider2D collBottom = trBottom.GetComponent<BoxCollider2D>();
@@ -186,7 +174,6 @@ public class EnemyAI : MonoBehaviour
 
 
 
-        //colGround.GetComponent<BoxCollider2D>().isTrigger = true;
         canMove = false;
         float time = 0;
         while (time < duration)
@@ -194,7 +181,6 @@ public class EnemyAI : MonoBehaviour
             time += Time.deltaTime;
             yield return null;
         }
-        //Destroy(this.gameObject);
 
 
     }
